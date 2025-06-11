@@ -84,27 +84,24 @@ export interface Database {
           user_id: string
           recipe_id: string
           recipe_data: Json
-          notes: string | null
           created_at: string
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
           id?: string
           user_id: string
           recipe_id: string
           recipe_data: Json
-          notes?: string | null
           created_at?: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Update: {
           id?: string
           user_id?: string
           recipe_id?: string
           recipe_data?: Json
-          notes?: string | null
           created_at?: string
-          updated_at?: string
+          updated_at?: string | null
         }
       }
       dietary_preferences: {

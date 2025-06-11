@@ -161,33 +161,6 @@ export default function RecipeSearchPage() {
     }
     
     try {
-      // Check if recipe already exists in our database
-      const { data: existingRecipes, error: recipeCheckError } = await supabase
-        .from('recipes')
-        .select('id')
-        .eq('id', recipe.id.toString())
-        .limit(1);
-        
-      if (recipeCheckError) {
-        throw recipeCheckError;
-      }
-      
-      // If recipe doesn't exist, add it to our database
-      if (!existingRecipes || existingRecipes.length === 0) {
-        const { error: insertError } = await supabase
-          .from('recipes')
-          .insert({
-            id: recipe.id.toString(),
-            title: recipe.title,
-            image: recipe.image,
-            data: recipe
-          });
-          
-        if (insertError) {
-          throw insertError;
-        }
-      }
-      
       // Check if recipe is already saved by user
       const { data: savedRecipes, error: savedCheckError } = await supabase
         .from('saved_recipes')
@@ -206,7 +179,8 @@ export default function RecipeSearchPage() {
           .from('saved_recipes')
           .insert({
             user_id: user.id,
-            recipe_id: recipe.id.toString()
+            recipe_id: recipe.id.toString(),
+            recipe_data: recipe
           });
           
         if (saveError) {
@@ -217,9 +191,25 @@ export default function RecipeSearchPage() {
       } else {
         toast.info(`${recipe.title} is already in your favorites`);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving recipe:', error);
-      toast.error('Failed to save recipe. Please try again.');
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
+
+      // More specific error messages
+      if (error.code === '23505') {
+        toast.info('Recipe is already saved to favorites');
+      } else if (error.code === '42501') {
+        toast.error('Permission denied. Please check if you are logged in.');
+      } else if (error.message?.includes('recipe_data')) {
+        toast.error('Error with recipe data format. Please try again.');
+      } else {
+        toast.error(`Failed to save recipe: ${error.message || 'Unknown error'}`);
+      }
     }
   };
 

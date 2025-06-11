@@ -335,9 +335,7 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
       const { error } = await supabase.from('saved_recipes').insert({
         user_id: user.id,
         recipe_id: recipe.id.toString(),
-        recipe_data: recipe,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        recipe_data: recipe
       });
       
       if (error) {
@@ -364,7 +362,23 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
       toast.success('Recipe saved to favorites');
     } catch (error: any) {
       console.error('Error saving recipe:', error);
-      toast.error(`An unexpected error occurred: ${error.message || 'Unknown error'}`);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
+
+      // More specific error messages
+      if (error.code === '23505') {
+        toast.info('Recipe is already saved to favorites');
+      } else if (error.code === '42501') {
+        toast.error('Permission denied. Please check if you are logged in.');
+      } else if (error.message?.includes('recipe_data')) {
+        toast.error('Error with recipe data format. Please try again.');
+      } else {
+        toast.error(`Failed to save recipe: ${error.message || 'Unknown error'}`);
+      }
     }
   };
 
