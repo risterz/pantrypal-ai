@@ -1,0 +1,68 @@
+@startuml
+!theme plain
+skinparam backgroundColor white
+skinparam roundcorner 10
+skinparam ArrowColor #556270
+skinparam ArrowFontColor #556270
+skinparam ArrowThickness 1.5
+
+title AI-Enhanced Recipe Suggestion System - PantryPal
+
+node Planning {
+  [Problem Definition & Objectives] as ProblemDef
+  [Data Collection] as DataCollection
+}
+
+node Designing {
+  [Flow of Information] as InfoFlow
+  [UI/UX Design] as UIDesign
+}
+
+node Development {
+  [Next.js Framework] as NextJS
+  [Supabase Integration] as Supabase
+  [Recipe API Integration] as RecipeAPI
+  [AI Enhancement System] as AIEnhancement
+}
+
+node Testing {
+  [Usability Testing] as UsabilityTest
+  [Functional Testing] as FunctionalTest
+  [Enhancement Evaluation] as EnhancementEval
+}
+
+node Deployment {
+  [Website] as Website
+  [Continuous Integration] as CI
+}
+
+Planning --> ProblemDef
+Planning --> DataCollection
+
+ProblemDef --> [Research Studies]
+DataCollection --> [Recipe Websites]
+[Recipe Websites] --> [Spoonacular, Yummly]
+
+Designing --> InfoFlow
+Designing --> UIDesign
+InfoFlow --> [Proposed structure for the website]
+UIDesign --> [Responsive Design]
+
+Development --> NextJS
+Development --> Supabase
+Development --> RecipeAPI
+Development --> AIEnhancement
+
+NextJS --> [React, TypeScript]
+Supabase --> [Authentication, Database]
+RecipeAPI --> [Recipe Search, Details]
+AIEnhancement --> [DeepSeek AI Integration]
+
+Testing --> UsabilityTest
+Testing --> FunctionalTest
+Testing --> EnhancementEval
+
+Deployment --> Website
+Deployment --> CI
+
+@enduml

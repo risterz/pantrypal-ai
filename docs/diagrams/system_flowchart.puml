@@ -1,0 +1,105 @@
+@startuml
+!theme plain
+skinparam backgroundColor white
+skinparam roundcorner 10
+skinparam ArrowColor #556270
+skinparam ArrowFontColor #556270
+skinparam ArrowThickness 1.5
+
+title PantryPal AI - System Flowchart
+
+start
+
+:Start;
+
+:Display Home Page;
+
+if (User wants to log in?) then (Yes)
+  :Show Login/Register Option;
+  
+  :User Register or Log In;
+  
+  :Verify Credentials;
+  
+  if (Login Successful?) then (Yes)
+    :Display User Profile;
+  else (No)
+    :Show Error Message;
+    :Return to Home Page;
+  endif
+else (No)
+  :Continue as Guest;
+endif
+
+:Display Recipe Search Interface;
+
+if (Search by?) then (Ingredients)
+  :Input Ingredients;
+  
+  :Validate Ingredients Input;
+  
+  :Process Ingredients with Combination Engine;
+  
+  :Query Database for Matching Recipes;
+else (Recipe Name)
+  :Input Recipe Name;
+  
+  :Validate Recipe Name Input;
+  
+  :Search for Recipes by Name;
+endif
+
+:Return Matching Recipes;
+
+:Enhance Recipes with AI;
+
+:Return AI-Enhanced Recipes;
+
+:Display Recipes to User;
+
+if (User Applies Filter?) then (Yes)
+  :Apply Filter (Diet, Time, etc.);
+  
+  :Filter Recipes Based on Filter;
+  
+  :Return Filtered Recipes;
+  
+  :Display Filtered Recipes to User;
+endif
+
+:User Selects a Recipe;
+
+:Fetch Detailed Recipe from Database;
+
+:Display Recipe Details;
+
+if (User wants to save or evaluate?) then (Yes)
+  if (User logged in?) then (Yes)
+    if (User Saves Recipe?) then (Yes)
+      :Save Recipe to User's Favorites;
+      
+      :Update Database with Saved Recipe;
+    endif
+    
+    if (User Submits Evaluation?) then (Yes)
+      :Store User Feedback;
+      
+      :Update AI Enhancement Model;
+    endif
+  else (No)
+    :Prompt User to Log In;
+    
+    if (User chooses to log in?) then (Yes)
+      :Show Login/Register Option;
+      :Return to Recipe Details After Login;
+    else (No)
+      :Continue Viewing as Guest;
+    endif
+  endif
+else (No)
+  :Continue Browsing Recipes;
+endif
+
+stop
+
+@enduml

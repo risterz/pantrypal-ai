@@ -1,0 +1,50 @@
+@startuml
+' Set the layout direction from left to right
+left to right direction
+
+' Declare actors first – these will be positioned on the left side
+actor Admin
+actor User
+actor AuthenticatedUser
+
+' Now define your system boundary containing the use cases
+rectangle "PantryPal Web Application" {
+  (Manage Content)
+  (Sync Recipes from API)
+  (Register Account)
+  (Login)
+  (Logout)
+  (Reset Password)
+  (View Profile)
+  (Edit Profile)
+  (View Favorites)
+  (View Dashboard)
+  (View Recipe Details)
+  (Browse Recipes)
+  (Search Recipes)
+  (Save Favorite Recipes)
+}
+
+' Create associations from each actor to the respective use cases 
+Admin --> (Manage Content)
+Admin --> (Sync Recipes from API)
+User  --> (Register Account)
+User  --> (Login)
+User  --> (Logout)
+User  --> (Reset Password)
+User  --> (View Profile)
+User  --> (Edit Profile)
+User  --> (View Favorites)
+User  --> (View Dashboard)
+User  --> (View Recipe Details)
+User  --> (Browse Recipes)
+User  --> (Search Recipes)
+AuthenticatedUser --> (View Profile)
+AuthenticatedUser --> (Edit Profile)
+AuthenticatedUser --> (View Favorites)
+AuthenticatedUser --> (View Dashboard)
+AuthenticatedUser --> (View Recipe Details)
+AuthenticatedUser --> (Save Favorite Recipes)
+AuthenticatedUser --> (Browse Recipes)
+AuthenticatedUser --> (Search Recipes)
+@enduml

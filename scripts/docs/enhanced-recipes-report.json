@@ -1,0 +1,536 @@
+{
+  "totalRecipes": 40,
+  "generatedAt": "2025-05-13T12:12:17.416Z",
+  "batches": [
+    {
+      "date": "May 13, 2025",
+      "recipes": [
+        {
+          "id": "715385",
+          "title": "Slow Cooker Baked Potato Soup",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 5,
+            "faster": 3,
+            "tastier": 1,
+            "other": 3
+          },
+          "createdAt": "2025-05-13T12:07:56.514+00:00",
+          "updatedAt": "2025-05-13T12:07:56.514+00:00"
+        },
+        {
+          "id": "659143",
+          "title": "Salmon, Watercress, Fennel and Baby Beetroot Salad",
+          "enhancementCount": 13,
+          "categories": {
+            "healthier": 5,
+            "faster": 4,
+            "tastier": 3,
+            "other": 1
+          },
+          "createdAt": "2025-05-13T12:07:24.064+00:00",
+          "updatedAt": "2025-05-13T12:07:24.064+00:00"
+        },
+        {
+          "id": "632269",
+          "title": "Amaranth and Roast Veggie Salad",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 5,
+            "faster": 1,
+            "tastier": 2,
+            "other": 4
+          },
+          "createdAt": "2025-05-13T12:06:51.569+00:00",
+          "updatedAt": "2025-05-13T12:06:51.569+00:00"
+        },
+        {
+          "id": "715521",
+          "title": "Turkey Avocado BLT Salad",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 6,
+            "faster": 4,
+            "tastier": 0,
+            "other": 2
+          },
+          "createdAt": "2025-05-13T12:06:19.346+00:00",
+          "updatedAt": "2025-05-13T12:06:19.346+00:00"
+        },
+        {
+          "id": "646738",
+          "title": "Mango Salsa Chicken",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 6,
+            "faster": 5,
+            "tastier": 1,
+            "other": 2
+          },
+          "createdAt": "2025-05-13T12:05:47.956+00:00",
+          "updatedAt": "2025-05-13T12:05:47.956+00:00"
+        },
+        {
+          "id": "636589",
+          "title": "Butternut Squash Frittata",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 3,
+            "faster": 2,
+            "tastier": 2,
+            "other": 5
+          },
+          "createdAt": "2025-05-13T12:05:16.004+00:00",
+          "updatedAt": "2025-05-13T12:05:16.004+00:00"
+        },
+        {
+          "id": "642605",
+          "title": "Farro With Mushrooms and Asparagus",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 3,
+            "faster": 5,
+            "tastier": 1,
+            "other": 3
+          },
+          "createdAt": "2025-05-13T12:04:43.775+00:00",
+          "updatedAt": "2025-05-13T12:04:43.775+00:00"
+        },
+        {
+          "id": "715495",
+          "title": "Turkey Tomato Cheese Pizza",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 8,
+            "faster": 2,
+            "tastier": 1,
+            "other": 1
+          },
+          "createdAt": "2025-05-13T12:04:11.157+00:00",
+          "updatedAt": "2025-05-13T12:04:11.157+00:00"
+        },
+        {
+          "id": "640062",
+          "title": "Corn Avocado Salsa",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 4,
+            "faster": 4,
+            "tastier": 1,
+            "other": 3
+          },
+          "createdAt": "2025-05-13T12:03:34.255+00:00",
+          "updatedAt": "2025-05-13T12:03:34.255+00:00"
+        },
+        {
+          "id": "716627",
+          "title": "Easy Homemade Rice and Beans",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 6,
+            "faster": 2,
+            "tastier": 2,
+            "other": 3
+          },
+          "createdAt": "2025-05-13T12:02:58.491+00:00",
+          "updatedAt": "2025-05-13T12:02:58.495+00:00"
+        },
+        {
+          "id": "715573",
+          "title": "Simple Skillet Lasagna",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 5,
+            "faster": 2,
+            "tastier": 2,
+            "other": 3
+          },
+          "createdAt": "2025-05-13T11:28:25.339+00:00",
+          "updatedAt": "2025-05-13T11:28:25.339+00:00"
+        },
+        {
+          "id": "664429",
+          "title": "Vegetable Dumplings",
+          "enhancementCount": 15,
+          "categories": {
+            "healthier": 6,
+            "faster": 2,
+            "tastier": 2,
+            "other": 2
+          },
+          "createdAt": "2025-05-13T11:27:51.178+00:00",
+          "updatedAt": "2025-05-13T11:27:51.178+00:00"
+        },
+        {
+          "id": "638235",
+          "title": "Chicken Satay",
+          "enhancementCount": 17,
+          "categories": {
+            "healthier": 5,
+            "faster": 2,
+            "tastier": 4,
+            "other": 2
+          },
+          "createdAt": "2025-05-13T11:27:19.066+00:00",
+          "updatedAt": "2025-05-13T11:27:19.066+00:00"
+        },
+        {
+          "id": "652078",
+          "title": "Mocha Overnight Oats with Almond Butter",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 5,
+            "faster": 2,
+            "tastier": 4,
+            "other": 2
+          },
+          "createdAt": "2025-05-13T11:26:44.894+00:00",
+          "updatedAt": "2025-05-13T11:26:44.894+00:00"
+        },
+        {
+          "id": "641057",
+          "title": "Curried Butternut Squash and Apple Soup",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 4,
+            "faster": 1,
+            "tastier": 2,
+            "other": 5
+          },
+          "createdAt": "2025-05-13T11:26:16.017+00:00",
+          "updatedAt": "2025-05-13T11:26:16.017+00:00"
+        },
+        {
+          "id": "636228",
+          "title": "Broccoli Tartar",
+          "enhancementCount": 14,
+          "categories": {
+            "healthier": 5,
+            "faster": 2,
+            "tastier": 2,
+            "other": 1
+          },
+          "createdAt": "2025-05-13T11:25:44.716+00:00",
+          "updatedAt": "2025-05-13T11:25:44.716+00:00"
+        },
+        {
+          "id": "661925",
+          "title": "Strawberry Cheesecake Overnight Oats",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 5,
+            "faster": 3,
+            "tastier": 3,
+            "other": 1
+          },
+          "createdAt": "2025-05-13T11:25:10.631+00:00",
+          "updatedAt": "2025-05-13T11:25:10.631+00:00"
+        },
+        {
+          "id": "633942",
+          "title": "Balsamic Roasted Vegetables",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 8,
+            "faster": 1,
+            "tastier": 0,
+            "other": 3
+          },
+          "createdAt": "2025-05-13T11:24:37.653+00:00",
+          "updatedAt": "2025-05-13T11:24:37.653+00:00"
+        },
+        {
+          "id": "639851",
+          "title": "Cod with Tomato-Olive-Chorizo Sauce and Polenta",
+          "enhancementCount": 16,
+          "categories": {
+            "healthier": 5,
+            "faster": 4,
+            "tastier": 1,
+            "other": 2
+          },
+          "createdAt": "2025-05-13T11:24:03.048+00:00",
+          "updatedAt": "2025-05-13T11:24:03.048+00:00"
+        },
+        {
+          "id": "715769",
+          "title": "Broccolini Quinoa Pilaf",
+          "enhancementCount": 12,
+          "categories": {
+            "healthier": 6,
+            "faster": 4,
+            "tastier": 2,
+            "other": 0
+          },
+          "createdAt": "2025-05-13T11:23:25.856+00:00",
+          "updatedAt": "2025-05-13T11:23:25.858+00:00"
+        },
+        {
+          "id": "648742",
+          "title": "Lemon Pepper Salmon",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 5,
+            "faster": 2,
+            "tastier": 1,
+            "other": 1
+          },
+          "createdAt": "2025-05-13T04:58:53.822+00:00",
+          "updatedAt": "2025-05-13T05:19:12.794+00:00"
+        },
+        {
+          "id": "652359",
+          "title": "Mediterranean Tuna Salad",
+          "enhancementCount": 8,
+          "categories": {
+            "healthier": 2,
+            "faster": 2,
+            "tastier": 1,
+            "other": 3
+          },
+          "createdAt": "2025-05-13T02:35:53.869+00:00",
+          "updatedAt": "2025-05-13T05:19:12.205+00:00"
+        },
+        {
+          "id": "782622",
+          "title": "Chocolate Peanut Butter Cookies",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 5,
+            "faster": 1,
+            "tastier": 2,
+            "other": 2
+          },
+          "createdAt": "2025-05-12T21:11:30.384+00:00",
+          "updatedAt": "2025-05-13T05:19:12.69+00:00"
+        },
+        {
+          "id": "716381",
+          "title": "Nigerian Snail Stew",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 3,
+            "faster": 2,
+            "tastier": 4,
+            "other": 1
+          },
+          "createdAt": "2025-05-12T21:11:05.93+00:00",
+          "updatedAt": "2025-05-13T05:19:12.587+00:00"
+        },
+        {
+          "id": "647875",
+          "title": "Indian-Spiced Roasted Potatoes",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 4,
+            "faster": 2,
+            "tastier": 2,
+            "other": 2
+          },
+          "createdAt": "2025-05-12T21:10:36.168+00:00",
+          "updatedAt": "2025-05-13T05:19:12.498+00:00"
+        },
+        {
+          "id": "716437",
+          "title": "Chilled Cucumber Avocado Soup",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 4,
+            "faster": 2,
+            "tastier": 1,
+            "other": 3
+          },
+          "createdAt": "2025-05-12T21:10:11.093+00:00",
+          "updatedAt": "2025-05-13T05:19:12.389+00:00"
+        },
+        {
+          "id": "649931",
+          "title": "Lentil Soup",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 4,
+            "faster": 3,
+            "tastier": 2,
+            "other": 1
+          },
+          "createdAt": "2025-05-12T21:09:44.744+00:00",
+          "updatedAt": "2025-05-13T05:19:12.295+00:00"
+        },
+        {
+          "id": "638420",
+          "title": "Chicken Piccata",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 4,
+            "faster": 1,
+            "tastier": 3,
+            "other": 2
+          },
+          "createdAt": "2025-05-12T21:09:20.647+00:00",
+          "updatedAt": "2025-05-13T05:19:12.112+00:00"
+        },
+        {
+          "id": "715523",
+          "title": "Chorizo and Beef Quinoa Stuffed Pepper",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 4,
+            "faster": 2,
+            "tastier": 3,
+            "other": 1
+          },
+          "createdAt": "2025-05-12T21:04:38.569+00:00",
+          "updatedAt": "2025-05-13T05:19:12.017+00:00"
+        },
+        {
+          "id": "660306",
+          "title": "Slow Cooker: Pork and Garlic Mashed Potatoes",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 3,
+            "faster": 2,
+            "tastier": 3,
+            "other": 2
+          },
+          "createdAt": "2025-05-12T21:04:37.894+00:00",
+          "updatedAt": "2025-05-13T05:19:11.896+00:00"
+        },
+        {
+          "id": "652417",
+          "title": "Moroccan Chickpea and Lentil Stew",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 3,
+            "faster": 4,
+            "tastier": 2,
+            "other": 1
+          },
+          "createdAt": "2025-05-12T21:04:37.232+00:00",
+          "updatedAt": "2025-05-13T05:19:11.793+00:00"
+        },
+        {
+          "id": "641803",
+          "title": "Easy Ginger Beef Broccoli",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 3,
+            "faster": 3,
+            "tastier": 0,
+            "other": 4
+          },
+          "createdAt": "2025-05-12T21:04:36.562+00:00",
+          "updatedAt": "2025-05-13T05:19:11.702+00:00"
+        },
+        {
+          "id": "642129",
+          "title": "Easy To Make Spring Rolls",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 1,
+            "faster": 3,
+            "tastier": 2,
+            "other": 4
+          },
+          "createdAt": "2025-05-12T21:04:35.899+00:00",
+          "updatedAt": "2025-05-13T05:19:11.545+00:00"
+        },
+        {
+          "id": "646512",
+          "title": "Salmon Caesar Salad",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 5,
+            "faster": 2,
+            "tastier": 2,
+            "other": 1
+          },
+          "createdAt": "2025-05-12T21:04:35.244+00:00",
+          "updatedAt": "2025-05-13T05:19:11.447+00:00"
+        },
+        {
+          "id": "715538",
+          "title": "Bruschetta Style Pork & Pasta",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 4,
+            "faster": 1,
+            "tastier": 3,
+            "other": 2
+          },
+          "createdAt": "2025-05-12T21:04:33.888+00:00",
+          "updatedAt": "2025-05-13T05:19:11.256+00:00"
+        },
+        {
+          "id": "716429",
+          "title": "Pasta with Garlic, Scallions, Cauliflower & Breadcrumbs",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 4,
+            "faster": 1,
+            "tastier": 5,
+            "other": 0
+          },
+          "createdAt": "2025-05-12T21:04:33.224+00:00",
+          "updatedAt": "2025-05-13T05:19:11.124+00:00"
+        },
+        {
+          "id": "654959",
+          "title": "Spaghetti with Smoked Salmon and Prawns",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 5,
+            "faster": 3,
+            "tastier": 2,
+            "other": 0
+          },
+          "createdAt": "2025-05-12T21:04:32.472+00:00",
+          "updatedAt": "2025-05-13T05:19:11.006+00:00"
+        },
+        {
+          "id": "633338",
+          "title": "Bacon Wrapped Filet Mignon",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 4,
+            "faster": 1,
+            "tastier": 3,
+            "other": 2
+          },
+          "createdAt": "2025-05-12T20:36:57.614+00:00",
+          "updatedAt": "2025-05-13T05:19:11.354+00:00"
+        },
+        {
+          "id": "660837",
+          "title": "Roast Pork Loin with Apples",
+          "enhancementCount": 10,
+          "categories": {
+            "healthier": 4,
+            "faster": 1,
+            "tastier": 1,
+            "other": 3
+          },
+          "createdAt": "2025-05-12T20:14:11.838+00:00",
+          "updatedAt": "2025-05-13T05:19:10.695+00:00"
+        }
+      ]
+    },
+    {
+      "date": "May 12, 2025",
+      "recipes": [
+        {
+          "id": "123",
+          "title": "Test Recipe",
+          "enhancementCount": 2,
+          "categories": {
+            "healthier": 0,
+            "faster": 0,
+            "tastier": 2,
+            "other": 0
+          },
+          "createdAt": "2025-05-12T14:17:38.46815+00:00",
+          "updatedAt": "2025-05-13T05:19:10.587+00:00"
+        }
+      ]
+    }
+  ]
+}

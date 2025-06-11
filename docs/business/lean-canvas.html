@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PantryPal AI Lean Canvas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1e3a5f;
+            color: white;
+        }
+        .canvas-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto auto auto;
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .canvas-box {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            color: #333;
+            position: relative;
+        }
+        .box-title {
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: #1e3a5f;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .box-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1e3a5f;
+            border-radius: 50%;
+            color: white;
+        }
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        .problem {
+            grid-column: 1;
+            grid-row: 1;
+        }
+        .solution {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        .uvp {
+            grid-column: 3;
+            grid-row: 1;
+        }
+        .unfair-advantage {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        .customer-segments {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        .key-metrics {
+            grid-column: 2;
+            grid-row: 2;
+        }
+        .channels {
+            grid-column: 2;
+            grid-row: 3;
+        }
+        .cost-structure {
+            grid-column: 1;
+            grid-row: 3;
+        }
+        .revenue-stream {
+            grid-column: 3;
+            grid-row: 3;
+        }
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .mental-health-canvas {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 80px;
+            background-color: #1e3a5f;
+            color: white;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transform: rotate(180deg);
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">PANTRYPAL AI LEAN CANVAS</h1>
+    
+    <div class="canvas-container">
+        <!-- Problem -->
+        <div class="canvas-box problem">
+            <div class="box-title">
+                PROBLEM
+                <div class="box-icon">🔍</div>
+            </div>
+            <ul>
+                <li>Food waste from unused ingredients in pantries</li>
+                <li>Difficulty finding recipes that match available ingredients</li>
+                <li>Lack of creativity and variety in home cooking</li>
+                <li>Limited knowledge of healthy substitutions and enhancements</li>
+                <li>Time spent searching for recipes across multiple sources</li>
+            </ul>
+        </div>
+
+        <!-- Solution -->
+        <div class="canvas-box solution">
+            <div class="box-title">
+                SOLUTION
+                <div class="box-icon">💡</div>
+            </div>
+            <ul>
+                <li>AI-powered recipe search based on available ingredients</li>
+                <li>Smart recipe enhancement suggestions for healthier, tastier meals</li>
+                <li>Personalized recipe recommendations based on dietary preferences</li>
+                <li>User-friendly web interface with modern, responsive design</li>
+                <li>Recipe saving and personalization features</li>
+            </ul>
+        </div>
+
+        <!-- Unique Value Proposition -->
+        <div class="canvas-box uvp">
+            <div class="box-title">
+                UNIQUE VALUE PROPOSITION
+                <div class="box-icon">🌟</div>
+            </div>
+            <ul>
+                <li>AI-Enhanced Cooking: One-stop app that transforms ordinary recipes into personalized culinary experiences</li>
+                <li>Reduce food waste while discovering creative meal options</li>
+                <li>Personalized cooking experience with AI-driven enhancements</li>
+                <li>Healthier eating through smart ingredient substitutions</li>
+                <li>Simplified recipe discovery based on what you already have</li>
+            </ul>
+        </div>
+
+        <!-- Unfair Advantage -->
+        <div class="canvas-box unfair-advantage">
+            <div class="box-title">
+                UNFAIR ADVANTAGE
+                <div class="box-icon">🔒</div>
+            </div>
+            <ul>
+                <li>AI recipe enhancement technology built on DeepSeek AI</li>
+                <li>Integration with established recipe APIs (Spoonacular)</li>
+                <li>Modern tech stack with Next.js, React, and Supabase</li>
+                <li>Focus on sustainability and reducing food waste</li>
+                <li>Combination of AI suggestions with expert culinary knowledge</li>
+            </ul>
+        </div>
+
+        <!-- Customer Segments -->
+        <div class="canvas-box customer-segments">
+            <div class="box-title">
+                CUSTOMER SEGMENTS
+                <div class="box-icon">👥</div>
+            </div>
+            <ul>
+                <li>Home cooks looking to reduce food waste</li>
+                <li>Health-conscious individuals seeking healthier meal options</li>
+                <li>Busy professionals with limited time for meal planning</li>
+                <li>Cooking enthusiasts wanting to enhance their recipes</li>
+                <li>People with dietary restrictions needing recipe adaptations</li>
+            </ul>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="canvas-box key-metrics">
+            <div class="box-title">
+                KEY METRICS
+                <div class="box-icon">📊</div>
+            </div>
+            <ul>
+                <li>Number of active users and retention rate</li>
+                <li>Recipe searches performed per user</li>
+                <li>AI enhancement suggestions applied by users</li>
+                <li>Recipes saved to user profiles</li>
+                <li>User satisfaction score from in-app feedback</li>
+                <li>Conversion from free to premium features (if applicable)</li>
+            </ul>
+        </div>
+
+        <!-- Channels -->
+        <div class="canvas-box channels">
+            <div class="box-title">
+                CHANNELS
+                <div class="box-icon">📱</div>
+            </div>
+            <ul>
+                <li>Web application accessible across devices</li>
+                <li>Social media marketing (Instagram, TikTok, Pinterest)</li>
+                <li>Food and sustainability blogs and partnerships</li>
+                <li>SEO optimization for recipe-related searches</li>
+                <li>Word-of-mouth via recipe sharing features</li>
+                <li>Email newsletters with seasonal recipe suggestions</li>
+            </ul>
+        </div>
+
+        <!-- Cost Structure -->
+        <div class="canvas-box cost-structure">
+            <div class="box-title">
+                COST STRUCTURE
+                <div class="box-icon">💰</div>
+            </div>
+            <ul>
+                <li>Web development and maintenance (Next.js, React)</li>
+                <li>AI model integration and API costs (DeepSeek AI)</li>
+                <li>Recipe API subscription fees (Spoonacular)</li>
+                <li>Supabase hosting and database costs</li>
+                <li>Marketing and user acquisition</li>
+                <li>Vercel deployment and hosting</li>
+            </ul>
+        </div>
+
+        <!-- Revenue Stream -->
+        <div class="canvas-box revenue-stream">
+            <div class="box-title">
+                REVENUE STREAM
+                <div class="box-icon">💵</div>
+            </div>
+            <ul>
+                <li>Freemium model with basic features free, premium features paid</li>
+                <li>Subscription for advanced AI enhancements and personalization</li>
+                <li>Sponsored content from food brands and kitchen equipment</li>
+                <li>Affiliate marketing with grocery delivery services</li>
+                <li>Potential partnerships with meal kit companies</li>
+                <li>Premium dietary analysis and meal planning features</li>
+            </ul>
+        </div>
+        
+        <!-- Vertical Label -->
+        <div class="mental-health-canvas">
+            PANTRYPAL AI
+        </div>
+    </div>
+</body>
+</html>
