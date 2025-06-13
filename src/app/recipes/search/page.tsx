@@ -88,7 +88,7 @@ export default function RecipeSearchPage() {
           diet: diet === "none" ? undefined : diet,
           number: 12
         };
-        
+
         results = await recipeApi.searchByIngredients(searchParams);
         
         if (diet !== "none" && results.length === 0) {

@@ -16,6 +16,10 @@ import { scrapedEnhancementApi, ScrapedEnhancement } from '@/lib/api/scrapedEnha
 import getFixedEnhancements from '@/lib/data/fixedEnhancements';
 import { RecipeEnhancement as RecipeEnhancementCard } from '@/components/ui/RecipeEnhancement';
 import { EnhancementComparison, EvaluationData } from '@/components/ui/EnhancementComparison';
+import { EnhancementValidationCard } from '@/components/ui/EnhancementValidationCard';
+import { ValidationDashboard } from '@/components/ui/ValidationDashboard';
+import { SimpleValidationCard } from '@/components/ui/SimpleValidationCard';
+import { EnhancementValidation } from '@/lib/api/enhancementValidationApi';
 
 
 
@@ -36,6 +40,8 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
   const [authChecked, setAuthChecked] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const [evaluationSubmitted, setEvaluationSubmitted] = useState(false);
+  const [showValidation, setShowValidation] = useState(false);
+  const [validationResults, setValidationResults] = useState<EnhancementValidation | null>(null);
   const supabase = createClient();
   const router = useRouter();
 
@@ -86,16 +92,21 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
     try {
       // Convert recipeId to number if it's a string
       const numericRecipeId = typeof evaluation.recipeId === 'string' ? parseInt(evaluation.recipeId, 10) : evaluation.recipeId;
-      
+
       // Since we removed the rating form, we just log that the comparison was viewed
       console.log('User viewed enhancement comparison for recipe ID:', numericRecipeId);
-      
+
       // No actual submission needed since rating form was removed
       toast.success('Enhancement comparison viewed!');
       setEvaluationSubmitted(true);
     } catch (error) {
       console.error('Error in handleSubmitEvaluation:', error);
     }
+  };
+
+  const handleValidationComplete = (validation: EnhancementValidation) => {
+    setValidationResults(validation);
+    toast.success('Validation completed successfully!');
   };
   
   // In Next.js 15.2.3, params is a Promise that must be unwrapped with React.use()
@@ -647,13 +658,20 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
               categorizedEnhancements={categorizedEnhancements}
             />
             
-            <div className="mt-4 flex justify-center">
-              <Button 
-                variant="outline" 
+            <div className="mt-4 flex justify-center gap-4">
+              <Button
+                variant="outline"
                 onClick={() => setShowComparison(!showComparison)}
                 className="mt-2"
               >
                 {showComparison ? 'Hide Enhancement Comparison' : 'Compare with Human Enhancements'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowValidation(!showValidation)}
+                className="mt-2"
+              >
+                {showValidation ? 'Hide AI Validation' : 'Validate AI Enhancements'}
               </Button>
             </div>
           </div>
@@ -689,11 +707,20 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
           )}
         </div>
       )}
-      
 
+      {/* AI Enhancement Validation Section */}
+      {showValidation && !isLoadingEnhancements && !isLoadingScrapedEnhancements && (
+        <div className="mb-8">
+          <ValidationDashboard
+            recipeId={String(recipe.id)}
+            aiEnhancements={getAIEnhancementsForComparison()}
+            humanEnhancements={scrapedEnhancements}
+            userId={user?.id}
+            onValidationComplete={handleValidationComplete}
+          />
+        </div>
+      )}
 
-
-      
       <div className="text-center mt-12">
         <Button 
           onClick={saveRecipe}

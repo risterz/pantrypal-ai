@@ -141,11 +141,11 @@ export const recipeApi = {
       if (!params.diet || params.diet === 'none') {
         return ingredientResponse.data;
       }
-      
+
       // If diet filter is specified, we need to do a second pass with complex search
       // Extract recipe IDs from the ingredient search results
       const recipeIds = ingredientResponse.data.map((recipe: Recipe) => recipe.id);
-      
+
       // Use complex search to filter by diet
       const complexResponse = await recipeApiClient.get('/complexSearch', {
         params: {
