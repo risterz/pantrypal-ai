@@ -141,17 +141,16 @@ export function ValidationDashboard({
         description: 'Consider refining the AI enhancement algorithms for better accuracy.'
       });
     }
-    
-<<<<<<< HEAD
+
     // Category-specific insights
     const categories = Object.entries(validation.category_accuracy);
-    const bestCategory = categories.reduce((best, current) => 
+    const bestCategory = categories.reduce((best, current) =>
       current[1].accuracy > best[1].accuracy ? current : best
     );
-    const worstCategory = categories.reduce((worst, current) => 
+    const worstCategory = categories.reduce((worst, current) =>
       current[1].accuracy < worst[1].accuracy ? current : worst
     );
-    
+
     if (bestCategory[1].accuracy > 0.7) {
       insights.push({
         type: 'success',
@@ -160,7 +159,7 @@ export function ValidationDashboard({
         description: `AI excels at ${bestCategory[0]} suggestions with ${formatScore(bestCategory[1].accuracy)} accuracy.`
       });
     }
-    
+
     if (worstCategory[1].accuracy < 0.5) {
       insights.push({
         type: 'warning',
@@ -169,11 +168,11 @@ export function ValidationDashboard({
         description: `${worstCategory[0]} enhancements need attention with only ${formatScore(worstCategory[1].accuracy)} accuracy.`
       });
     }
-    
+
     // Coverage insights
     const matchedCount = validation.validation_results.filter(r => r.matched_human_enhancements.length > 0).length;
     const coverage = matchedCount / aiEnhancements.length;
-    
+
     if (coverage >= 0.8) {
       insights.push({
         type: 'success',
@@ -189,9 +188,7 @@ export function ValidationDashboard({
         description: `Only ${formatScore(coverage)} of AI suggestions match human data. Consider expanding training data.`
       });
     }
-    
-=======
->>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
+
     return insights;
   };
 
@@ -369,7 +366,6 @@ export function ValidationDashboard({
                       </CardContent>
                     </Card>
                   </div>
-<<<<<<< HEAD
 
                   {/* Category Accuracy */}
                   <Card className="bg-white/80">
@@ -453,13 +449,10 @@ export function ValidationDashboard({
                       </CardContent>
                     </Card>
                   </div>
-=======
->>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
                 </div>
               </TabsContent>
               
               <TabsContent value="detailed" className="mt-6">
-<<<<<<< HEAD
                 <div className="space-y-4">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold">Individual Enhancement Analysis</h3>
@@ -547,15 +540,10 @@ export function ValidationDashboard({
                       </Card>
                     ))}
                   </div>
-=======
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">Detailed analysis view would be implemented here</p>
->>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
                 </div>
               </TabsContent>
               
               <TabsContent value="insights" className="mt-6">
-<<<<<<< HEAD
                 <div className="space-y-6">
                   <div className="text-center mb-6">
                     <h3 className="text-lg font-semibold mb-2">AI Performance Insights</h3>
@@ -713,10 +701,6 @@ export function ValidationDashboard({
                       </div>
                     </CardContent>
                   </Card>
-=======
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">AI insights view would be implemented here</p>
->>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
                 </div>
               </TabsContent>
             </Tabs>
@@ -725,8 +709,4 @@ export function ValidationDashboard({
       </CardContent>
     </Card>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
