@@ -194,4 +194,8 @@ export function LoadingSkeleton({ type = 'recipe-card', count = 1 }: LoadingSkel
   }
 }
 
+<<<<<<< HEAD
 export default LoadingSkeleton;
+=======
+export default LoadingSkeleton;
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a

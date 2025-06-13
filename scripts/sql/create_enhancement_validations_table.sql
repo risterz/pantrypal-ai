@@ -76,4 +76,8 @@ COMMENT ON COLUMN enhancement_validations.validation_notes IS 'Optional notes ab
 -- Grant necessary permissions
 GRANT SELECT ON enhancement_validations TO anon;
 GRANT ALL ON enhancement_validations TO authenticated;
+<<<<<<< HEAD
 GRANT ALL ON enhancement_validations TO service_role;
+=======
+GRANT ALL ON enhancement_validations TO service_role;
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a

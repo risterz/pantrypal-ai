@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+<<<<<<< HEAD
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   CheckCircle, 
@@ -17,19 +18,35 @@ import {
   Bot,
   Eye,
   Lightbulb
+=======
+import { 
+  CheckCircle, 
+  XCircle, 
+  AlertCircle, 
+  BarChart3, 
+  RefreshCw
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { 
   EnhancementValidation, 
+<<<<<<< HEAD
   ValidationResult, 
   CategoryAccuracy,
   EnhancementValidator 
+=======
+  enhancementValidationApi 
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
 } from '@/lib/api/enhancementValidationApi';
 
 interface SimpleValidationCardProps {
   recipeId: string;
   aiEnhancements: string[];
   humanEnhancements: string[];
+<<<<<<< HEAD
+=======
+  userId?: string;
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
   onValidationComplete?: (validation: EnhancementValidation) => void;
 }
 
@@ -37,11 +54,18 @@ export function SimpleValidationCard({
   recipeId,
   aiEnhancements,
   humanEnhancements,
+<<<<<<< HEAD
+=======
+  userId,
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
   onValidationComplete
 }: SimpleValidationCardProps) {
   const [validation, setValidation] = useState<EnhancementValidation | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+<<<<<<< HEAD
   const [activeTab, setActiveTab] = useState('overview');
+=======
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
 
   const runValidation = async () => {
     if (aiEnhancements.length === 0 || humanEnhancements.length === 0) {
@@ -51,6 +75,7 @@ export function SimpleValidationCard({
 
     try {
       setIsRunning(true);
+<<<<<<< HEAD
       toast.info('Running validation analysis...');
       
       // Use the validation logic directly without database storage
@@ -62,13 +87,30 @@ export function SimpleValidationCard({
       
       setValidation(validationResult);
       toast.success('Validation analysis completed successfully!');
+=======
+      toast.info('Running validation...');
+      
+      const validationResult = await enhancementValidationApi.validateRecipe(
+        recipeId,
+        aiEnhancements,
+        humanEnhancements,
+        userId
+      );
+      
+      setValidation(validationResult);
+      toast.success('Validation completed!');
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
       
       if (onValidationComplete) {
         onValidationComplete(validationResult);
       }
     } catch (error) {
       console.error('Validation error:', error);
+<<<<<<< HEAD
       toast.error('Failed to run validation analysis. Please try again.');
+=======
+      toast.error('Failed to run validation. Please try again.');
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
     } finally {
       setIsRunning(false);
     }
@@ -80,41 +122,64 @@ export function SimpleValidationCard({
     return 'text-red-600';
   };
 
+<<<<<<< HEAD
   const getScoreBadgeVariant = (score: number): 'default' | 'secondary' | 'destructive' => {
     if (score >= 0.8) return 'default';
     if (score >= 0.6) return 'secondary';
     return 'destructive';
   };
 
+=======
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
   const formatScore = (score: number): string => {
     return `${Math.round(score * 100)}%`;
   };
 
   return (
+<<<<<<< HEAD
     <Card className="w-full bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+=======
+    <Card className="w-full">
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="flex items-center gap-2">
+<<<<<<< HEAD
               <Target className="h-6 w-6 text-blue-600" />
               AI Enhancement Validation System
             </CardTitle>
             <CardDescription className="mt-2">
               Compare AI-generated recipe enhancements with manually gathered human-scraped data
+=======
+              <BarChart3 className="h-5 w-5" />
+              Quick Validation
+            </CardTitle>
+            <CardDescription>
+              Simple AI enhancement validation
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
             </CardDescription>
           </div>
           <Button 
             onClick={runValidation} 
             disabled={isRunning || aiEnhancements.length === 0 || humanEnhancements.length === 0}
+<<<<<<< HEAD
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
           >
             <RefreshCw className={`h-4 w-4 ${isRunning ? 'animate-spin' : ''}`} />
             {isRunning ? 'Analyzing...' : validation ? 'Re-analyze' : 'Start Analysis'}
+=======
+            size="sm"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${isRunning ? 'animate-spin' : ''}`} />
+            {isRunning ? 'Validating...' : 'Validate'}
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
           </Button>
         </div>
       </CardHeader>
       
       <CardContent>
+<<<<<<< HEAD
         {/* Data Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <Card className="bg-white/80">
@@ -511,9 +576,61 @@ export function SimpleValidationCard({
                 </div>
               </TabsContent>
             </Tabs>
+=======
+        {!validation ? (
+          <div className="text-center py-4">
+            <AlertCircle className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground">
+              Click validate to compare AI enhancements with human data
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {/* Overall Score */}
+            <div className="text-center">
+              <div className={`text-3xl font-bold ${getScoreColor(validation.overall_score)}`}>
+                {formatScore(validation.overall_score)}
+              </div>
+              <div className="text-sm text-muted-foreground">Overall Score</div>
+              <Progress value={validation.overall_score * 100} className="mt-2" />
+            </div>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div className={`text-lg font-semibold ${getScoreColor(validation.similarity_score)}`}>
+                  {formatScore(validation.similarity_score)}
+                </div>
+                <div className="text-xs text-muted-foreground">Similarity</div>
+              </div>
+              <div>
+                <div className={`text-lg font-semibold ${getScoreColor(validation.relevance_score)}`}>
+                  {formatScore(validation.relevance_score)}
+                </div>
+                <div className="text-xs text-muted-foreground">Relevance</div>
+              </div>
+              <div>
+                <div className={`text-lg font-semibold ${getScoreColor(validation.quality_score)}`}>
+                  {formatScore(validation.quality_score)}
+                </div>
+                <div className="text-xs text-muted-foreground">Quality</div>
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="text-center pt-2 border-t">
+              <div className="text-sm text-muted-foreground">
+                {validation.validation_results.filter(r => r.matched_human_enhancements.length > 0).length} of {aiEnhancements.length} AI suggestions matched human data
+              </div>
+            </div>
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
           </div>
         )}
       </CardContent>
     </Card>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a

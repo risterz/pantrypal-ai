@@ -142,6 +142,7 @@ export function ValidationDashboard({
       });
     }
     
+<<<<<<< HEAD
     // Category-specific insights
     const categories = Object.entries(validation.category_accuracy);
     const bestCategory = categories.reduce((best, current) => 
@@ -189,6 +190,8 @@ export function ValidationDashboard({
       });
     }
     
+=======
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
     return insights;
   };
 
@@ -366,6 +369,7 @@ export function ValidationDashboard({
                       </CardContent>
                     </Card>
                   </div>
+<<<<<<< HEAD
 
                   {/* Category Accuracy */}
                   <Card className="bg-white/80">
@@ -449,10 +453,13 @@ export function ValidationDashboard({
                       </CardContent>
                     </Card>
                   </div>
+=======
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
                 </div>
               </TabsContent>
               
               <TabsContent value="detailed" className="mt-6">
+<<<<<<< HEAD
                 <div className="space-y-4">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold">Individual Enhancement Analysis</h3>
@@ -540,10 +547,15 @@ export function ValidationDashboard({
                       </Card>
                     ))}
                   </div>
+=======
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Detailed analysis view would be implemented here</p>
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
                 </div>
               </TabsContent>
               
               <TabsContent value="insights" className="mt-6">
+<<<<<<< HEAD
                 <div className="space-y-6">
                   <div className="text-center mb-6">
                     <h3 className="text-lg font-semibold mb-2">AI Performance Insights</h3>
@@ -701,6 +713,10 @@ export function ValidationDashboard({
                       </div>
                     </CardContent>
                   </Card>
+=======
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">AI insights view would be implemented here</p>
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
                 </div>
               </TabsContent>
             </Tabs>
@@ -709,4 +725,8 @@ export function ValidationDashboard({
       </CardContent>
     </Card>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a

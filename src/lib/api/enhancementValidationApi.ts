@@ -275,20 +275,6 @@ export const enhancementValidationApi = {
 
       if (error) {
         console.error('Error storing validation results:', error);
-        console.error('Error details:', JSON.stringify(error, null, 2));
-        console.error('Data being inserted:', {
-          recipe_id: recipeId,
-          ai_enhancements: aiEnhancements,
-          human_enhancements: humanEnhancements,
-          validation_results: validation.validation_results,
-          overall_score: validation.overall_score,
-          similarity_score: validation.similarity_score,
-          relevance_score: validation.relevance_score,
-          quality_score: validation.quality_score,
-          category_accuracy: validation.category_accuracy,
-          validated_by: userId || null,
-          updated_at: new Date().toISOString()
-        });
         throw error;
       }
 
@@ -300,9 +286,7 @@ export const enhancementValidationApi = {
       };
     } catch (error) {
       console.error('Failed to store validation:', error);
-      console.error('Storage error details:', JSON.stringify(error, null, 2));
       // Return validation results even if storage fails
-      console.warn('Validation completed but could not be stored. Results are still valid.');
       return validation;
     }
   },

@@ -188,4 +188,8 @@ export function AvatarImage({
   );
 }
 
+<<<<<<< HEAD
 export default OptimizedImage;
+=======
+export default OptimizedImage;
+>>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
