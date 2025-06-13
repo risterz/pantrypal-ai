@@ -124,6 +124,56 @@ export interface Database {
           created_at?: string
         }
       }
+      enhancement_validations: {
+        Row: {
+          id: string
+          recipe_id: string
+          ai_enhancements: Json
+          human_enhancements: Json
+          validation_results: Json
+          overall_score: number
+          similarity_score: number
+          relevance_score: number
+          quality_score: number
+          category_accuracy: Json
+          validated_by: string | null
+          validation_notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          recipe_id: string
+          ai_enhancements: Json
+          human_enhancements: Json
+          validation_results: Json
+          overall_score: number
+          similarity_score: number
+          relevance_score: number
+          quality_score: number
+          category_accuracy: Json
+          validated_by?: string | null
+          validation_notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          recipe_id?: string
+          ai_enhancements?: Json
+          human_enhancements?: Json
+          validation_results?: Json
+          overall_score?: number
+          similarity_score?: number
+          relevance_score?: number
+          quality_score?: number
+          category_accuracy?: Json
+          validated_by?: string | null
+          validation_notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
       recent_searches: {
         Row: {
           id: string
@@ -155,4 +205,4 @@ export interface Database {
       [_ in never]: never
     }
   }
-} 
+}
