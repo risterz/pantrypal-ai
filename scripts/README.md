@@ -25,6 +25,10 @@ Tools for scraping recipe data from external sources:
 - `recipe_scraper_gui.py` - GUI for scraping recipes from websites
 - `crispy_buttermilk_fried_chicken_enhancements.json` - Sample scraped data
 
+### `sql/` - Database Schema Scripts
+SQL scripts for database setup and management:
+- `create_enhancement_validations_table.sql` - Creates the enhancement validation table for academic validation system
+
 ## 🚀 Usage
 
 ### Recipe Enhancement Scripts
@@ -44,6 +48,11 @@ Tools for scraping recipe data from external sources:
    node scripts/enhancement/update-recipe-database.js
    ```
 
+4. **Run Enhancement System**
+   ```bash
+   node scripts/enhancement/recipe-enhancement-system.js
+   ```
+
 ### Web Scraping
 
 1. **Recipe Scraper GUI**
@@ -56,13 +65,22 @@ Tools for scraping recipe data from external sources:
    python scripts/scrapper/enhancement_uploader_gui.py
    ```
 
+### Database Setup
+
+1. **Create Enhancement Validation Table**
+   ```sql
+   -- Run this SQL in your Supabase SQL editor
+   \i scripts/sql/create_enhancement_validations_table.sql
+   ```
+
 ### Package.json Scripts
 
 The following scripts are available via npm/yarn:
 
-- `npm run scrape` - Run recipe scraping script
-- `npm run populate-enhancements` - Populate scraped enhancements
-- `npm run populate-enhancements-mcp` - Populate enhancements via MCP
+- `npm run check-recipes` - Check recipes table structure and data
+- `npm run create-human-enhancements` - Generate human-curated enhancements
+- `npm run update-recipe-database` - Update recipe database with enhancements
+- `npm run enhancement-system` - Run core enhancement system logic
 
 ## 🔧 Requirements
 
@@ -97,6 +115,11 @@ The following scripts are available via npm/yarn:
 - Updates Supabase database with enhancement data
 - Handles batch operations
 - Includes error handling and logging
+
+**`check_recipes_table.js`**
+- Verifies recipe table structure and data integrity
+- Validates database schema compatibility
+- Reports on data quality and completeness
 
 ### Scraping Scripts
 
