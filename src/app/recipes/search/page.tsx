@@ -218,33 +218,35 @@ export default function RecipeSearchPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h1 className="text-3xl font-bold mb-6">Find Recipes to Enhance</h1>
-        <p className="text-gray-600 mb-8">
+    <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8 sm:px-6 lg:px-8 search-container">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8 relative z-10">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Find Recipes to Enhance</h1>
+        <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
           Search for recipes to get personalized AI enhancement suggestions for cooking smarter, healthier, and tastier meals.
         </p>
-        
+
         <div className="flex mb-6 rounded-md overflow-hidden">
           <button
             onClick={() => setSearchMode('ingredients')}
-            className={`flex-1 py-2 px-4 text-center font-medium ${
-              searchMode === 'ingredients' 
-                ? 'bg-[#4ECDC4] text-white' 
+            className={`flex-1 py-3 px-2 sm:px-4 text-center font-medium text-sm sm:text-base transition-colors ${
+              searchMode === 'ingredients'
+                ? 'bg-[#4ECDC4] text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            Search by Ingredients
+            <span className="hidden sm:inline">Search by Ingredients</span>
+            <span className="sm:hidden">Ingredients</span>
           </button>
           <button
             onClick={() => setSearchMode('name')}
-            className={`flex-1 py-2 px-4 text-center font-medium ${
-              searchMode === 'name' 
-                ? 'bg-[#4ECDC4] text-white' 
+            className={`flex-1 py-3 px-2 sm:px-4 text-center font-medium text-sm sm:text-base transition-colors ${
+              searchMode === 'name'
+                ? 'bg-[#4ECDC4] text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            Search by Recipe Name
+            <span className="hidden sm:inline">Search by Recipe Name</span>
+            <span className="sm:hidden">Recipe Name</span>
           </button>
         </div>
         
@@ -261,33 +263,33 @@ export default function RecipeSearchPage() {
                 value={newIngredient}
                 onChange={(e) => setNewIngredient(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="flex-grow"
+                className="flex-grow text-sm sm:text-base"
               />
-              <Button onClick={addIngredient} size="icon">
+              <Button onClick={addIngredient} size="icon" className="flex-shrink-0">
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            
+
             {ingredients.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-2">
                 {ingredients.map((ingredient, index) => (
                   <div
                     key={index}
-                    className="bg-gray-100 rounded-full px-3 py-1 flex items-center gap-1"
+                    className="bg-gray-100 rounded-full px-3 py-2 flex items-center gap-2 text-sm"
                   >
                     <span>{ingredient}</span>
                     <button
                       onClick={() => removeIngredient(ingredient)}
-                      className="text-gray-500 hover:text-red-500"
+                      className="text-gray-500 hover:text-red-500 transition-colors"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-3 w-3" />
                     </button>
                   </div>
                 ))}
               </div>
             )}
             
-            <div className="mt-6">
+            <div className="mt-6 relative z-10">
               <IngredientCategories onAddIngredient={(ingredient: string) => {
                 const normalizedInput = ingredient.trim().toLowerCase();
                 if (!ingredients.map(i => i.toLowerCase()).includes(normalizedInput)) {
@@ -333,13 +335,13 @@ export default function RecipeSearchPage() {
         </div>
         
         <div className="flex justify-center">
-          <Button 
-            onClick={searchRecipes} 
-            className="bg-[#4ECDC4] hover:bg-[#3dbdb5] text-white px-8 py-2 rounded-md"
+          <Button
+            onClick={searchRecipes}
+            className="bg-[#4ECDC4] hover:bg-[#3dbdb5] text-white px-6 sm:px-8 py-3 rounded-md w-full sm:w-auto text-sm sm:text-base"
             disabled={isLoading}
           >
             {isLoading ? (
-              <span className="flex items-center">
+              <span className="flex items-center justify-center">
                 <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -348,7 +350,7 @@ export default function RecipeSearchPage() {
               </span>
             ) : (
               <>
-                <Search className="mr-2 h-5 w-5" />
+                <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Find Recipes
               </>
             )}
@@ -356,42 +358,42 @@ export default function RecipeSearchPage() {
         </div>
       </div>
       
-      <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-lg p-6 mb-10 border border-blue-200">
+      <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-lg p-4 sm:p-6 mb-8 sm:mb-10 border border-blue-200">
         <div className="flex items-center gap-3 mb-4">
-          <div className="bg-yellow-100 p-2 rounded-full">
-            <Lightbulb className="h-6 w-6 text-yellow-500" />
+          <div className="bg-yellow-100 p-2 rounded-full flex-shrink-0">
+            <Lightbulb className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500" />
           </div>
-          <h2 className="text-xl font-bold text-blue-700">How PantryPal AI Enhances Your Cooking</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-blue-700">How PantryPal AI Enhances Your Cooking</h2>
         </div>
-        <p className="text-gray-700 mb-4">
+        <p className="text-gray-700 mb-4 text-sm sm:text-base">
           Our AI doesn't just find recipes - it provides personalized enhancement suggestions for each recipe to make them:
         </p>
-        <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-4">
           <li className="bg-white p-3 rounded-lg border border-green-100 flex items-start gap-2">
-            <span className="text-green-500 font-bold">•</span>
-            <span><strong>Healthier</strong> - Smarter ingredient substitutions and cooking methods</span>
+            <span className="text-green-500 font-bold text-lg">•</span>
+            <span className="text-sm sm:text-base"><strong>Healthier</strong> - Smarter ingredient substitutions and cooking methods</span>
           </li>
           <li className="bg-white p-3 rounded-lg border border-green-100 flex items-start gap-2">
-            <span className="text-green-500 font-bold">•</span>
-            <span><strong>Faster</strong> - Time-saving techniques and prep strategies</span>
+            <span className="text-green-500 font-bold text-lg">•</span>
+            <span className="text-sm sm:text-base"><strong>Faster</strong> - Time-saving techniques and prep strategies</span>
           </li>
-          <li className="bg-white p-3 rounded-lg border border-green-100 flex items-start gap-2">
-            <span className="text-green-500 font-bold">•</span>
-            <span><strong>Tastier</strong> - Professional flavor enhancement tips</span>
+          <li className="bg-white p-3 rounded-lg border border-green-100 flex items-start gap-2 sm:col-span-2 md:col-span-1">
+            <span className="text-green-500 font-bold text-lg">•</span>
+            <span className="text-sm sm:text-base"><strong>Tastier</strong> - Professional flavor enhancement tips</span>
           </li>
         </ul>
-        <p className="text-gray-700 italic">
+        <p className="text-gray-700 italic text-sm sm:text-base">
           Find a recipe you like, then let our AI help you make it even better!
         </p>
       </div>
       
       {recipes.length > 0 && (
         <div>
-          <h2 className="text-2xl font-bold mb-6">Found {recipes.length} recipes to enhance</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Found {recipes.length} recipes to enhance</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {recipes.map((recipe) => (
-              <Card key={recipe.id} className="overflow-hidden">
-                <div className="h-48 overflow-hidden relative">
+              <Card key={recipe.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="h-40 sm:h-48 overflow-hidden relative">
                   <img
                     src={recipe.image}
                     alt={recipe.title}
@@ -401,26 +403,26 @@ export default function RecipeSearchPage() {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="bg-white text-[#FF6B6B] hover:bg-white hover:text-pink-600 rounded-full h-8 w-8"
+                      className="bg-white text-[#FF6B6B] hover:bg-white hover:text-pink-600 rounded-full h-8 w-8 shadow-md"
                       onClick={() => saveRecipe(recipe)}
                     >
                       <Heart className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
-                <CardContent className="p-4">
-                  <h3 className="font-bold text-lg mb-2 truncate">{recipe.title}</h3>
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
-                      {searchMode === 'ingredients' ? 
+                <CardContent className="p-3 sm:p-4">
+                  <h3 className="font-bold text-base sm:text-lg mb-2 line-clamp-2">{recipe.title}</h3>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div className="text-xs sm:text-sm text-gray-500">
+                      {searchMode === 'ingredients' ?
                         `${recipe.usedIngredientCount} of your ingredients` :
                         `Click to view details`
                       }
                     </div>
-                    <Button 
-                      variant="link" 
+                    <Button
+                      variant="link"
                       onClick={() => viewRecipeDetails(recipe.id)}
-                      className="text-[#4ECDC4] p-0 h-auto font-medium"
+                      className="text-[#4ECDC4] p-0 h-auto font-medium text-sm self-start sm:self-auto"
                     >
                       View & Enhance
                     </Button>

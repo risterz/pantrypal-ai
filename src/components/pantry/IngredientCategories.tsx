@@ -56,29 +56,28 @@ export function IngredientCategories({ onAddIngredient }: IngredientCategoriesPr
     <div className="mt-6">
       <h3 className="text-md font-medium mb-2">Quick Add Ingredients</h3>
       <Tabs defaultValue="proteins" value={activeCategory} onValueChange={handleCategoryChange}>
-        <TabsList className="grid grid-cols-3 md:grid-cols-7 mb-4">
-          <TabsTrigger value="proteins">Proteins</TabsTrigger>
-          <TabsTrigger value="vegetables">Veggies</TabsTrigger>
-          <TabsTrigger value="fruits">Fruits</TabsTrigger>
-          <TabsTrigger value="dairy">Dairy</TabsTrigger>
-          <TabsTrigger value="grains">Grains</TabsTrigger>
-          <TabsTrigger value="condiments">Condiments</TabsTrigger>
-          <TabsTrigger value="herbs">Herbs/Spices</TabsTrigger>
+        <TabsList className="grid grid-cols-3 md:grid-cols-6 mb-4 h-auto p-1">
+          <TabsTrigger value="proteins" className="text-xs sm:text-sm py-2 px-2 sm:px-3">Proteins</TabsTrigger>
+          <TabsTrigger value="vegetables" className="text-xs sm:text-sm py-2 px-2 sm:px-3">Veggies</TabsTrigger>
+          <TabsTrigger value="fruits" className="text-xs sm:text-sm py-2 px-2 sm:px-3">Fruits</TabsTrigger>
+          <TabsTrigger value="dairy" className="text-xs sm:text-sm py-2 px-2 sm:px-3">Dairy</TabsTrigger>
+          <TabsTrigger value="grains" className="text-xs sm:text-sm py-2 px-2 sm:px-3">Grains</TabsTrigger>
+          <TabsTrigger value="condiments" className="text-xs sm:text-sm py-2 px-2 sm:px-3">Condiments</TabsTrigger>
         </TabsList>
         
         {Object.entries(ingredientsByCategory).map(([category, ingredients]) => (
-          <TabsContent key={category} value={category} className="mt-0">
-            <div className="flex flex-wrap gap-2">
+          <TabsContent key={category} value={category} className="mt-2">
+            <div className="flex flex-wrap gap-2 relative z-10">
               {ingredients.map((ingredient) => (
-                <Badge 
+                <button
                   key={ingredient}
-                  variant="outline" 
-                  className="px-3 py-1 cursor-pointer bg-gray-50 hover:bg-gray-100 flex items-center gap-1"
+                  type="button"
+                  className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4ECDC4] focus:border-transparent transition-all duration-200 cursor-pointer"
                   onClick={() => onAddIngredient(ingredient)}
                 >
-                  <Plus className="h-3 w-3" />
-                  {ingredient}
-                </Badge>
+                  <Plus className="h-3 w-3 text-gray-500" />
+                  <span className="relative z-20">{ingredient}</span>
+                </button>
               ))}
             </div>
           </TabsContent>

@@ -3,6 +3,136 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  /* Improve touch targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Better text readability on mobile */
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Prevent horizontal scroll */
+  html, body {
+    overflow-x: hidden;
+  }
+
+  /* Better button spacing on mobile */
+  .mobile-button-spacing > * + * {
+    margin-top: 0.5rem;
+  }
+}
+
+/* Line clamp utility for better text truncation */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Smooth scrolling for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles for better accessibility */
+.focus-visible:focus-visible {
+  outline: 2px solid #4ECDC4;
+  outline-offset: 2px;
+}
+
+/* Fix text rendering and z-index issues */
+.ingredient-button {
+  position: relative;
+  z-index: 10;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.ingredient-button:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* Ensure text is always visible */
+.ingredient-text {
+  position: relative;
+  z-index: 20;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Fix any potential overlay issues */
+.tabs-content {
+  position: relative;
+  z-index: 10;
+  background-color: transparent;
+}
+
+/* Ensure proper stacking context */
+.search-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Recipe summary formatting */
+.recipe-summary {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.recipe-summary p {
+  margin-bottom: 1rem;
+  text-indent: 0;
+}
+
+.recipe-summary p:last-child {
+  margin-bottom: 0;
+}
+
+/* Better text formatting for recipe summaries */
+.recipe-summary strong {
+  color: #374151;
+  font-weight: 600;
+}
+
+.recipe-summary a {
+  color: #4ECDC4;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.recipe-summary a:hover {
+  color: #3dbdb5;
+  text-decoration: underline;
+}
+
+/* Mobile text adjustments */
+@media (max-width: 640px) {
+  .recipe-summary {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    text-align: left;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

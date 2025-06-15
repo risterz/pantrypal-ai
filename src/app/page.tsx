@@ -43,32 +43,32 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between">
       {/* Hero Section */}
       <section className="w-full bg-gradient-to-r from-[#4ECDC4] to-[#556270] text-white">
-        <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
-          <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+        <div className="max-w-7xl mx-auto px-4 py-12 sm:py-16 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
+          <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8 text-center md:text-left">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight">
               Make Your Recipes Better with AI
             </h1>
-            <p className="text-xl mb-6">
+            <p className="text-lg sm:text-xl mb-6 leading-relaxed">
               Enhance your cooking with smart AI suggestions to make your favorite recipes tastier, healthier, and more efficient.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button asChild size="lg" className="bg-[#FF6B6B] hover:bg-[#ff5252] text-white">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+              <Button asChild size="lg" className="bg-[#FF6B6B] hover:bg-[#ff5252] text-white w-full sm:w-auto">
                 <Link href="/recipes/search">
                   Find Recipes
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild size="lg" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-[#4ECDC4] font-medium transition-colors">
+              <Button asChild size="lg" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-[#4ECDC4] font-medium transition-colors w-full sm:w-auto">
                 <Link href="/about">
                   Learn More
                 </Link>
               </Button>
             </div>
           </div>
-          <div className="md:w-1/2">
-            <div className="relative h-72 md:h-96 w-full rounded-lg overflow-hidden shadow-xl">
-              <Image 
-                src="/ai-cooking-enhancement.jpg" 
+          <div className="md:w-1/2 w-full">
+            <div className="relative h-64 sm:h-72 md:h-96 w-full rounded-lg overflow-hidden shadow-xl">
+              <Image
+                src="/ai-cooking-enhancement.jpg"
                 alt="Cooking with PantryPal"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"

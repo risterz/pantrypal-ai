@@ -482,48 +482,48 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
 
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-6">
-        <Button 
-          variant="ghost" 
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8 sm:px-6 lg:px-8">
+      <div className="mb-4 sm:mb-6">
+        <Button
+          variant="ghost"
           onClick={() => router.back()}
-          className="mb-4"
+          className="mb-4 text-sm sm:text-base"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
-        
-        <div className="flex justify-between items-start">
-          <h1 className="text-3xl font-bold text-gray-900">{recipe.title}</h1>
+
+        <div className="flex justify-between items-start gap-4">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight flex-1">{recipe.title}</h1>
           <Button
             variant="outline"
             size="icon"
-            className="text-[#FF6B6B] border-[#FF6B6B] hover:bg-[#FF6B6B] hover:text-white"
+            className="text-[#FF6B6B] border-[#FF6B6B] hover:bg-[#FF6B6B] hover:text-white flex-shrink-0"
             onClick={saveRecipe}
           >
-            <Heart className="h-5 w-5" />
+            <Heart className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
         </div>
       </div>
-      
-      <div className="rounded-lg overflow-hidden mb-8">
+
+      <div className="rounded-lg overflow-hidden mb-6 sm:mb-8">
         <img
           src={recipe.image}
           alt={recipe.title}
-          className="w-full h-auto object-cover"
+          className="w-full h-48 sm:h-64 md:h-auto object-cover"
         />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Prep Time Card */}
         <Card className="overflow-hidden border border-[#F2F4F8] hover:border-[#4ECDC4] hover:shadow-sm transition-all duration-300">
-          <CardContent className="p-4 flex items-start gap-3">
-            <div className="bg-[#F2F8F8] p-2.5 rounded-full flex items-center justify-center w-9 h-9 flex-shrink-0 mt-0.5">
-              <Clock className="h-5 w-5 text-[#4ECDC4]" />
+          <CardContent className="p-3 sm:p-4 flex items-start gap-3">
+            <div className="bg-[#F2F8F8] p-2 sm:p-2.5 rounded-full flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 mt-0.5">
+              <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-[#4ECDC4]" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-500">Prep time</p>
-              <p className="text-base font-semibold text-gray-800">{recipe.readyInMinutes} minutes</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-500">Prep time</p>
+              <p className="text-sm sm:text-base font-semibold text-gray-800">{recipe.readyInMinutes} minutes</p>
             </div>
           </CardContent>
         </Card>
@@ -616,12 +616,18 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
       </div>
       
       {recipe.summary && (
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Summary</h2>
-          <div 
-            className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: recipe.summary }} 
-          />
+        <div className="mb-6 sm:mb-8">
+          <Card className="overflow-hidden border border-[#F2F4F8] hover:border-[#4ECDC4] hover:shadow-sm transition-all duration-300">
+            <CardHeader className="bg-[#F8FBFB] border-b border-[#F2F4F8]">
+              <CardTitle className="text-lg sm:text-xl font-bold text-gray-800">Recipe Summary</CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6">
+              <div
+                className="recipe-summary prose prose-sm sm:prose max-w-none text-gray-700"
+                dangerouslySetInnerHTML={{ __html: recipe.summary }}
+              />
+            </CardContent>
+          </Card>
         </div>
       )}
       
@@ -658,20 +664,32 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
               categorizedEnhancements={categorizedEnhancements}
             />
             
-            <div className="mt-4 flex justify-center gap-4">
+            <div className="mt-4 flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 px-4 sm:px-0">
               <Button
                 variant="outline"
                 onClick={() => setShowComparison(!showComparison)}
-                className="mt-2"
+                className="mt-2 text-xs sm:text-sm px-3 sm:px-4 py-2 w-full sm:w-auto"
+                size="sm"
               >
-                {showComparison ? 'Hide Enhancement Comparison' : 'Compare with Human Enhancements'}
+                <span className="hidden sm:inline">
+                  {showComparison ? 'Hide Enhancement Comparison' : 'Compare with Human Enhancements'}
+                </span>
+                <span className="sm:hidden">
+                  {showComparison ? 'Hide Comparison' : 'Compare with Human'}
+                </span>
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setShowValidation(!showValidation)}
-                className="mt-2"
+                className="mt-2 text-xs sm:text-sm px-3 sm:px-4 py-2 w-full sm:w-auto"
+                size="sm"
               >
-                {showValidation ? 'Hide AI Validation' : 'Validate AI Enhancements'}
+                <span className="hidden sm:inline">
+                  {showValidation ? 'Hide AI Validation' : 'Validate AI Enhancements'}
+                </span>
+                <span className="sm:hidden">
+                  {showValidation ? 'Hide Validation' : 'Validate AI'}
+                </span>
               </Button>
             </div>
           </div>
@@ -721,14 +739,14 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
         </div>
       )}
 
-      <div className="text-center mt-12">
-        <Button 
+      <div className="text-center mt-8 sm:mt-12 px-4 sm:px-0">
+        <Button
           onClick={saveRecipe}
-          className="bg-[#FF6B6B] hover:bg-[#ff5252]"
+          className="bg-[#FF6B6B] hover:bg-[#ff5252] w-full sm:w-auto"
           size="lg"
         >
-          <Heart className="mr-2 h-5 w-5" />
-          Save to Favorites
+          <Heart className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+          <span className="text-sm sm:text-base">Save to Favorites</span>
         </Button>
       </div>
     </div>

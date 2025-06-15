@@ -68,9 +68,9 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link 
-                href="/" 
-                className="text-xl font-bold text-[#FF6B6B]"
+              <Link
+                href="/"
+                className="text-lg sm:text-xl font-bold text-[#FF6B6B]"
                 onClick={closeMenu}
               >
                 PantryPal AI
@@ -146,13 +146,13 @@ export default function Navbar() {
       </div>
 
       {isMenuOpen && (
-        <div className="sm:hidden">
+        <div className="sm:hidden bg-white border-t border-gray-200 shadow-lg">
           <div className="pt-2 pb-3 space-y-1">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+                className={`block pl-4 pr-4 py-3 border-l-4 text-base font-medium transition-colors ${
                   pathname === link.href
                     ? 'border-[#FF6B6B] text-[#FF6B6B] bg-red-50'
                     : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'
@@ -163,33 +163,36 @@ export default function Navbar() {
               </Link>
             ))}
           </div>
-          <div className="pt-4 pb-3 border-t border-gray-200">
+          <div className="pt-4 pb-4 border-t border-gray-200">
             {user ? (
-              <div className="space-y-1">
-                <div className="px-4 py-2 text-sm text-gray-500">
-                  Signed in as {user.email}
+              <div className="space-y-2">
+                <div className="px-4 py-2 text-sm text-gray-500 bg-gray-50">
+                  Signed in as {user.email?.split('@')[0]}
                 </div>
                 <button
                   onClick={handleSignOut}
-                  className="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                  className="block w-full text-left px-4 py-3 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition-colors"
                 >
+                  <LogOut className="h-4 w-4 mr-2 inline" />
                   Sign out
                 </button>
               </div>
             ) : (
-              <div className="space-y-1 px-4 py-2">
+              <div className="space-y-2 px-4 py-2">
                 <Link
                   href="/login"
-                  className="block text-left py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                  className="block text-left py-3 px-2 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
                   onClick={closeMenu}
                 >
+                  <LogIn className="h-4 w-4 mr-2 inline" />
                   Sign in
                 </Link>
                 <Link
                   href="/signup"
-                  className="block text-left py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                  className="block text-left py-3 px-2 text-base font-medium bg-[#FF6B6B] text-white hover:bg-[#ff5252] rounded-md transition-colors"
                   onClick={closeMenu}
                 >
+                  <UserPlus className="h-4 w-4 mr-2 inline" />
                   Sign up
                 </Link>
               </div>

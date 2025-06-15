@@ -215,13 +215,15 @@ export function RecipeEnhancement({
     }[categoryKey] || 'border-gray-200 bg-gray-50';
 
     return (
-      <Card className={`mb-4 ${categoryColor} border-2`}>
-        <CardHeader className="pb-2">
+      <Card className={`mb-3 sm:mb-4 ${categoryColor} border-2`}>
+        <CardHeader className="pb-2 px-3 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {icon}
-              <h3 className="text-lg font-semibold">{title}</h3>
-              <Badge variant="secondary" className="ml-2">
+            <div className="flex items-center gap-1 sm:gap-2 flex-1 min-w-0">
+              <div className="flex-shrink-0">
+                {icon}
+              </div>
+              <h3 className="text-sm sm:text-lg font-semibold truncate">{title}</h3>
+              <Badge variant="secondary" className="ml-1 sm:ml-2 text-xs flex-shrink-0">
                 {enhancements.length} tip{enhancements.length !== 1 ? 's' : ''}
               </Badge>
             </div>
@@ -229,39 +231,39 @@ export function RecipeEnhancement({
               variant="ghost"
               size="sm"
               onClick={() => toggleCategory(categoryKey)}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-gray-500 hover:text-gray-700 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0"
             >
               {isExpanded ? 'Collapse' : 'Expand'}
             </Button>
           </div>
         </CardHeader>
         {isExpanded && (
-          <CardContent className="pt-0">
-            <div className="space-y-3">
+          <CardContent className="pt-0 px-3 sm:px-6 pb-3 sm:pb-6">
+            <div className="space-y-2 sm:space-y-3">
               {enhancements.map((enhancement, index) => (
                 <div
                   key={`${categoryKey}-${index}`}
-                  className={`p-3 rounded-lg border transition-all duration-200 ${
+                  className={`p-2 sm:p-3 rounded-lg border transition-all duration-200 ${
                     appliedEnhancements.has(enhancement)
                       ? 'bg-green-50 border-green-200'
                       : 'bg-white border-gray-200 hover:border-gray-300'
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-2 flex-1">
+                  <div className="flex items-start justify-between gap-2 sm:gap-3">
+                    <div className="flex items-start gap-1 sm:gap-2 flex-1 min-w-0">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => toggleEnhancement(enhancement)}
-                        className={`p-1 h-6 w-6 rounded-full ${
+                        className={`p-1 h-5 w-5 sm:h-6 sm:w-6 rounded-full flex-shrink-0 ${
                           appliedEnhancements.has(enhancement)
                             ? 'text-green-600 hover:text-green-700'
                             : 'text-gray-400 hover:text-gray-600'
                         }`}
                       >
-                        <CheckCircle className="h-4 w-4" />
+                        <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                       </Button>
-                      <span className={`text-sm ${
+                      <span className={`text-xs sm:text-sm leading-relaxed ${
                         appliedEnhancements.has(enhancement)
                           ? 'text-green-800 font-medium'
                           : 'text-gray-700'
@@ -273,9 +275,9 @@ export function RecipeEnhancement({
                       variant="ghost"
                       size="sm"
                       onClick={() => copyEnhancement(enhancement)}
-                      className="p-1 h-6 w-6 text-gray-400 hover:text-gray-600"
+                      className="p-1 h-5 w-5 sm:h-6 sm:w-6 text-gray-400 hover:text-gray-600 flex-shrink-0"
                     >
-                      <Copy className="h-3 w-3" />
+                      <Copy className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                     </Button>
                   </div>
                 </div>
@@ -292,64 +294,64 @@ export function RecipeEnhancement({
 
   return (
     <Card className="bg-gradient-to-br from-blue-50 to-green-50 border-blue-200 shadow-lg">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-yellow-100 p-2 rounded-full">
-              <Sparkles className="h-6 w-6 text-yellow-600" />
+      <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6 py-3 sm:py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            <div className="bg-yellow-100 p-1.5 sm:p-2 rounded-full flex-shrink-0">
+              <Sparkles className="h-4 w-4 sm:h-6 sm:w-6 text-yellow-600" />
             </div>
-            <div>
-              <CardTitle className="text-xl text-blue-700">AI Enhancement Suggestions</CardTitle>
-              <CardDescription className="text-blue-600">
+            <div className="min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-xl text-blue-700 truncate">AI Enhancement Suggestions</CardTitle>
+              <CardDescription className="text-xs sm:text-sm text-blue-600">
                 Smart ways to improve this recipe • {totalEnhancements} suggestions
               </CardDescription>
             </div>
           </div>
           {hasEnhancements && (
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="bg-white">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              <Badge variant="outline" className="bg-white text-xs">
                 {appliedCount}/{totalEnhancements} applied
               </Badge>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={shareAllEnhancements}
-                className="bg-white hover:bg-gray-50"
+                className="bg-white hover:bg-gray-50 text-xs sm:text-sm px-2 sm:px-3"
               >
-                <Share2 className="h-4 w-4 mr-1" />
+                <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                 Share
               </Button>
             </div>
           )}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
         {hasEnhancements ? (
-          <div className="space-y-4">
-            {renderCategory("💚 Healthier Options", finalCategorizedEnhancements.healthier, <Heart className="h-5 w-5 text-red-500" />, "healthier")}
-            {renderCategory("⚡ Time-Saving Tips", finalCategorizedEnhancements.faster, <Clock className="h-5 w-5 text-blue-500" />, "faster")}
-            {renderCategory("✨ Flavor Boosters", finalCategorizedEnhancements.tastier, <Zap className="h-5 w-5 text-yellow-500" />, "tastier")}
-            {finalCategorizedEnhancements.other.length > 0 && renderCategory("🔧 Other Tips", finalCategorizedEnhancements.other, <ChefHat className="h-5 w-5 text-purple-500" />, "other")}
+          <div className="space-y-3 sm:space-y-4">
+            {renderCategory("💚 Healthier Options", finalCategorizedEnhancements.healthier, <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />, "healthier")}
+            {renderCategory("⚡ Time-Saving Tips", finalCategorizedEnhancements.faster, <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />, "faster")}
+            {renderCategory("✨ Flavor Boosters", finalCategorizedEnhancements.tastier, <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" />, "tastier")}
+            {finalCategorizedEnhancements.other.length > 0 && renderCategory("🔧 Other Tips", finalCategorizedEnhancements.other, <ChefHat className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />, "other")}
 
             {appliedCount > 0 && (
-              <div className="mt-6 p-4 bg-green-100 border border-green-200 rounded-lg">
+              <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-green-100 border border-green-200 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  <h4 className="font-semibold text-green-800">Applied Enhancements</h4>
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
+                  <h4 className="font-semibold text-green-800 text-sm sm:text-base">Applied Enhancements</h4>
                 </div>
-                <p className="text-green-700 text-sm">
+                <p className="text-green-700 text-xs sm:text-sm">
                   Great job! You've applied {appliedCount} enhancement{appliedCount !== 1 ? 's' : ''} to improve this recipe.
                 </p>
               </div>
             )}
           </div>
         ) : (
-          <div className="text-center py-8">
-            <div className="bg-gray-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-              <Lightbulb className="h-8 w-8 text-gray-400" />
+          <div className="text-center py-6 sm:py-8">
+            <div className="bg-gray-100 p-3 sm:p-4 rounded-full w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+              <Lightbulb className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
             </div>
-            <p className="text-gray-500 text-lg font-medium">No specific enhancements available</p>
-            <p className="text-gray-400 mt-2">This recipe looks great as is, or try a different recipe for more suggestions.</p>
+            <p className="text-gray-500 text-base sm:text-lg font-medium">No specific enhancements available</p>
+            <p className="text-gray-400 mt-2 text-sm sm:text-base">This recipe looks great as is, or try a different recipe for more suggestions.</p>
           </div>
         )}
       </CardContent>

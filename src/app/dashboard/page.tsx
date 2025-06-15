@@ -181,67 +181,67 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Welcome back, {user.user_metadata?.full_name || user.email?.split('@')[0] || 'Chef'}! 👋</h1>
-        <p className="text-gray-600">Here's what's cooking in your kitchen</p>
+    <div className="max-w-7xl mx-auto px-4 py-6 sm:py-12 sm:px-6 lg:px-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2 leading-tight">Welcome back, {user.user_metadata?.full_name || user.email?.split('@')[0] || 'Chef'}! 👋</h1>
+        <p className="text-gray-600 text-sm sm:text-base">Here's what's cooking in your kitchen</p>
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
         <Card className="border-l-4 border-l-[#4ECDC4]">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Searches</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalSearches}</p>
+                <p className="text-xs sm:text-sm font-medium text-gray-600">Total Searches</p>
+                <p className="text-lg sm:text-2xl font-bold text-gray-900">{stats.totalSearches}</p>
               </div>
-              <div className="bg-[#4ECDC4] bg-opacity-10 p-3 rounded-full">
-                <Search className="h-6 w-6 text-[#4ECDC4]" />
+              <div className="bg-[#4ECDC4] bg-opacity-10 p-2 sm:p-3 rounded-full">
+                <Search className="h-4 w-4 sm:h-6 sm:w-6 text-[#4ECDC4]" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-[#FF6B6B]">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Saved Recipes</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalSavedRecipes}</p>
+                <p className="text-xs sm:text-sm font-medium text-gray-600">Saved Recipes</p>
+                <p className="text-lg sm:text-2xl font-bold text-gray-900">{stats.totalSavedRecipes}</p>
               </div>
-              <div className="bg-[#FF6B6B] bg-opacity-10 p-3 rounded-full">
-                <Heart className="h-6 w-6 text-[#FF6B6B]" />
+              <div className="bg-[#FF6B6B] bg-opacity-10 p-2 sm:p-3 rounded-full">
+                <Heart className="h-4 w-4 sm:h-6 sm:w-6 text-[#FF6B6B]" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-[#556270]">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">This Week</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.thisWeekSearches}</p>
+                <p className="text-xs sm:text-sm font-medium text-gray-600">This Week</p>
+                <p className="text-lg sm:text-2xl font-bold text-gray-900">{stats.thisWeekSearches}</p>
               </div>
-              <div className="bg-[#556270] bg-opacity-10 p-3 rounded-full">
-                <TrendingUp className="h-6 w-6 text-[#556270]" />
+              <div className="bg-[#556270] bg-opacity-10 p-2 sm:p-3 rounded-full">
+                <TrendingUp className="h-4 w-4 sm:h-6 sm:w-6 text-[#556270]" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-amber-500">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Cooking Level</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-xs sm:text-sm font-medium text-gray-600">Cooking Level</p>
+                <p className="text-sm sm:text-2xl font-bold text-gray-900">
                   {stats.totalSearches > 20 ? 'Expert' : stats.totalSearches > 10 ? 'Intermediate' : 'Beginner'}
                 </p>
               </div>
-              <div className="bg-amber-500 bg-opacity-10 p-3 rounded-full">
-                <ChefHat className="h-6 w-6 text-amber-500" />
+              <div className="bg-amber-500 bg-opacity-10 p-2 sm:p-3 rounded-full">
+                <ChefHat className="h-4 w-4 sm:h-6 sm:w-6 text-amber-500" />
               </div>
             </div>
           </CardContent>
