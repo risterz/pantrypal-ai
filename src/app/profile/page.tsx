@@ -7,20 +7,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ShieldAlert, UserCircle, Save, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ProfilePage() {
   const [username, setUsername] = useState('');
-  const [dietaryPreferences, setDietaryPreferences] = useState<{[key: string]: boolean}>({
-    vegetarian: false,
-    vegan: false,
-    glutenFree: false,
-    dairyFree: false,
-    keto: false,
-    paleo: false,
-  });
+  const [dietaryPreference, setDietaryPreference] = useState<string>('none');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [user, setUser] = useState<any>(null);
@@ -57,13 +50,19 @@ export default function ProfilePage() {
         if (profileData) {
           setProfile(profileData);
           setUsername(profileData.username || '');
-          if (profileData.dietary_preferences) {
-            // Convert array to object for form handling
-            const prefsObject = { ...dietaryPreferences };
-            profileData.dietary_preferences.forEach((pref: string) => {
-              prefsObject[pref] = true;
-            });
-            setDietaryPreferences(prefsObject);
+          if (profileData.dietary_preferences && profileData.dietary_preferences.length > 0) {
+            // Take the first preference as the single selection
+            const firstPreference = profileData.dietary_preferences[0];
+            // Map database values to display values
+            const preferenceMap: { [key: string]: string } = {
+              'vegetarian': 'vegetarian',
+              'vegan': 'vegan',
+              'glutenFree': 'gluten-free',
+              'dairyFree': 'dairy-free',
+              'keto': 'ketogenic',
+              'paleo': 'paleo'
+            };
+            setDietaryPreference(preferenceMap[firstPreference] || 'none');
           }
         }
       } catch (error) {
@@ -81,11 +80,18 @@ export default function ProfilePage() {
     try {
       setIsSaving(true);
       
-      // Convert dietary preferences object to array for database storage
-      const preferencesArray = Object.entries(dietaryPreferences)
-        .filter(([_, isSelected]) => isSelected)
-        .map(([preference]) => preference);
-      
+      // Convert single dietary preference to array for database storage
+      const preferenceMap: { [key: string]: string } = {
+        'vegetarian': 'vegetarian',
+        'vegan': 'vegan',
+        'gluten-free': 'glutenFree',
+        'dairy-free': 'dairyFree',
+        'ketogenic': 'keto',
+        'paleo': 'paleo'
+      };
+
+      const preferencesArray = dietaryPreference === 'none' ? [] : [preferenceMap[dietaryPreference]];
+
       const updates = {
         id: user.id,
         username: username.trim() || null,
@@ -193,30 +199,25 @@ export default function ProfilePage() {
         <Card>
           <CardHeader>
             <CardTitle>Dietary Preferences</CardTitle>
-            <CardDescription>Select your dietary preferences for recipe suggestions</CardDescription>
+            <CardDescription>Select your dietary preference for recipe suggestions</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {Object.entries(dietaryPreferences).map(([key, value]) => (
-                <div key={key} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={key} 
-                    checked={value}
-                    onCheckedChange={(checked) => 
-                      setDietaryPreferences({
-                        ...dietaryPreferences,
-                        [key]: checked === true
-                      })
-                    }
-                  />
-                  <label
-                    htmlFor={key}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                  </label>
-                </div>
-              ))}
+            <div className="space-y-2">
+              <Label htmlFor="dietary-preference">Dietary Preference</Label>
+              <Select value={dietaryPreference} onValueChange={setDietaryPreference}>
+                <SelectTrigger id="dietary-preference" className="w-full">
+                  <SelectValue placeholder="Select dietary preference" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No Preference</SelectItem>
+                  <SelectItem value="vegetarian">Vegetarian</SelectItem>
+                  <SelectItem value="vegan">Vegan</SelectItem>
+                  <SelectItem value="gluten-free">Gluten-Free</SelectItem>
+                  <SelectItem value="dairy-free">Dairy-Free</SelectItem>
+                  <SelectItem value="ketogenic">Ketogenic</SelectItem>
+                  <SelectItem value="paleo">Paleo</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
           <CardFooter className="justify-between">

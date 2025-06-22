@@ -25,13 +25,74 @@ export default function RecipeSearchPage() {
   const supabase = createClient();
   const router = useRouter();
 
-  useEffect(() => {
-    async function getUser() {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+  // Helper function to get diet display name
+  const getDietDisplayName = (dietValue: string) => {
+    const dietMap: { [key: string]: string } = {
+      'none': 'No Preference',
+      'vegetarian': 'Vegetarian',
+      'vegan': 'Vegan',
+      'gluten-free': 'Gluten-Free',
+      'dairy-free': 'Dairy-Free',
+      'ketogenic': 'Ketogenic',
+      'paleo': 'Paleo'
+    };
+    return dietMap[dietValue] || 'Select dietary preference';
+  };
+
+  // Helper function to map profile dietary preferences to search values
+  const mapProfilePreferencesToSearchValue = (profilePreferences: string[]): string => {
+    if (!profilePreferences || profilePreferences.length === 0) {
+      return 'none';
     }
 
-    getUser();
+    // Mapping from profile keys to search values
+    const preferenceMap: { [key: string]: string } = {
+      'vegetarian': 'vegetarian',
+      'vegan': 'vegan',
+      'glutenFree': 'gluten-free',
+      'dairyFree': 'dairy-free',
+      'keto': 'ketogenic',
+      'paleo': 'paleo'
+    };
+
+    // Find the first preference that has a mapping
+    for (const pref of profilePreferences) {
+      if (preferenceMap[pref]) {
+        return preferenceMap[pref];
+      }
+    }
+
+    return 'none';
+  };
+
+  useEffect(() => {
+    async function getUserAndPreferences() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+
+        if (user) {
+          // Load user's dietary preferences from profile
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('dietary_preferences')
+            .eq('id', user.id)
+            .single();
+
+          if (profileError && profileError.code !== 'PGRST116') {
+            console.error('Error fetching profile preferences:', profileError);
+          } else if (profileData && profileData.dietary_preferences) {
+            // Map profile preferences to search value and set as default
+            const defaultDiet = mapProfilePreferencesToSearchValue(profileData.dietary_preferences);
+            setDiet(defaultDiet);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user preferences:', error);
+      }
+    }
+
+    getUserAndPreferences();
   }, []);
 
   const addIngredient = () => {
@@ -321,13 +382,16 @@ export default function RecipeSearchPage() {
           </Label>
           <Select value={diet} onValueChange={setDiet}>
             <SelectTrigger id="diet" className="w-full">
-              <SelectValue placeholder="Select dietary preference" />
+              <SelectValue placeholder="Select dietary preference">
+                {getDietDisplayName(diet)}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="none">No Preference</SelectItem>
               <SelectItem value="vegetarian">Vegetarian</SelectItem>
               <SelectItem value="vegan">Vegan</SelectItem>
               <SelectItem value="gluten-free">Gluten-Free</SelectItem>
+              <SelectItem value="dairy-free">Dairy-Free</SelectItem>
               <SelectItem value="ketogenic">Ketogenic</SelectItem>
               <SelectItem value="paleo">Paleo</SelectItem>
             </SelectContent>

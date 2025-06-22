@@ -35,6 +35,27 @@ export interface CategoryAccuracy {
   };
 }
 
+export interface ParameterAnalysis {
+  ingredients: {
+    ai_suggestions: string[];
+    human_suggestions: string[];
+    substitution_accuracy: number;
+    ingredient_match_score: number;
+  };
+  time: {
+    ai_time_changes: string[];
+    human_time_changes: string[];
+    time_efficiency_score: number;
+    time_accuracy: number;
+  };
+  temperature: {
+    ai_temp_changes: string[];
+    human_temp_changes: string[];
+    temperature_accuracy: number;
+    cooking_method_alignment: number;
+  };
+}
+
 export interface ValidationResult {
   enhancement_id: string;
   ai_enhancement: string;
@@ -43,6 +64,8 @@ export interface ValidationResult {
   relevance_score: number;
   quality_assessment: 'excellent' | 'good' | 'fair' | 'poor';
   category_match: boolean;
+  parameter_analysis: ParameterAnalysis;
+  technical_accuracy: number;
   notes?: string;
 }
 
@@ -56,6 +79,13 @@ export interface EnhancementValidation {
   similarity_score: number;
   relevance_score: number;
   quality_score: number;
+  technical_accuracy_score: number;
+  parameter_analysis_summary: {
+    ingredient_accuracy: number;
+    time_accuracy: number;
+    temperature_accuracy: number;
+    overall_technical_score: number;
+  };
   category_accuracy: CategoryAccuracy;
   validated_by?: string;
   validation_notes?: string;
@@ -87,22 +117,170 @@ export class EnhancementValidator {
    */
   private static assessQuality(enhancement: string): number {
     let score = 0;
-    
+
     // Length check (not too short, not too long)
     const wordCount = enhancement.split(/\s+/).length;
     if (wordCount >= 5 && wordCount <= 50) score += 0.3;
-    
+
     // Specificity indicators
     const specificityKeywords = ['reduce', 'increase', 'substitute', 'add', 'remove', 'cook', 'bake', 'minutes', 'degrees', 'tablespoon', 'cup'];
     const hasSpecificity = specificityKeywords.some(keyword => enhancement.toLowerCase().includes(keyword));
     if (hasSpecificity) score += 0.4;
-    
+
     // Actionability indicators
     const actionKeywords = ['try', 'use', 'replace', 'consider', 'opt for', 'instead of'];
     const hasAction = actionKeywords.some(keyword => enhancement.toLowerCase().includes(keyword));
     if (hasAction) score += 0.3;
-    
+
     return Math.min(score, 1.0);
+  }
+
+  /**
+   * Extract ingredient suggestions from enhancement text
+   */
+  private static extractIngredients(enhancement: string): string[] {
+    const ingredients: string[] = [];
+    const text = enhancement.toLowerCase();
+
+    // Common ingredient patterns
+    const ingredientPatterns = [
+      /substitute\s+([^,]+?)\s+with\s+([^,\.]+)/g,
+      /replace\s+([^,]+?)\s+with\s+([^,\.]+)/g,
+      /use\s+([^,]+?)\s+instead\s+of\s+([^,\.]+)/g,
+      /add\s+([^,\.]+)/g,
+      /remove\s+([^,\.]+)/g,
+    ];
+
+    ingredientPatterns.forEach(pattern => {
+      let match;
+      while ((match = pattern.exec(text)) !== null) {
+        if (match[1]) ingredients.push(match[1].trim());
+        if (match[2]) ingredients.push(match[2].trim());
+      }
+    });
+
+    return ingredients.filter(ing => ing.length > 2);
+  }
+
+  /**
+   * Extract time-related suggestions from enhancement text
+   */
+  private static extractTimeChanges(enhancement: string): string[] {
+    const timeChanges: string[] = [];
+    const text = enhancement.toLowerCase();
+
+    // Time patterns
+    const timePatterns = [
+      /(\d+)\s*minutes?/g,
+      /(\d+)\s*hours?/g,
+      /cook\s+for\s+([^,\.]+)/g,
+      /bake\s+for\s+([^,\.]+)/g,
+      /reduce\s+cooking\s+time/g,
+      /faster/g,
+      /quicker/g,
+      /save\s+time/g,
+    ];
+
+    timePatterns.forEach(pattern => {
+      let match;
+      while ((match = pattern.exec(text)) !== null) {
+        timeChanges.push(match[0]);
+      }
+    });
+
+    return timeChanges;
+  }
+
+  /**
+   * Extract temperature-related suggestions from enhancement text
+   */
+  private static extractTemperatureChanges(enhancement: string): string[] {
+    const tempChanges: string[] = [];
+    const text = enhancement.toLowerCase();
+
+    // Temperature patterns
+    const tempPatterns = [
+      /(\d+)\s*degrees?/g,
+      /(\d+)\s*°[cf]/g,
+      /lower\s+temperature/g,
+      /higher\s+temperature/g,
+      /reduce\s+heat/g,
+      /increase\s+heat/g,
+      /medium\s+heat/g,
+      /low\s+heat/g,
+      /high\s+heat/g,
+    ];
+
+    tempPatterns.forEach(pattern => {
+      let match;
+      while ((match = pattern.exec(text)) !== null) {
+        tempChanges.push(match[0]);
+      }
+    });
+
+    return tempChanges;
+  }
+
+  /**
+   * Analyze parameter accuracy between AI and human enhancements
+   */
+  private static analyzeParameters(aiEnhancement: string, humanEnhancements: string[]): ParameterAnalysis {
+    const aiIngredients = this.extractIngredients(aiEnhancement);
+    const aiTimeChanges = this.extractTimeChanges(aiEnhancement);
+    const aiTempChanges = this.extractTemperatureChanges(aiEnhancement);
+
+    // Aggregate human suggestions
+    const humanIngredients = humanEnhancements.flatMap(h => this.extractIngredients(h));
+    const humanTimeChanges = humanEnhancements.flatMap(h => this.extractTimeChanges(h));
+    const humanTempChanges = humanEnhancements.flatMap(h => this.extractTemperatureChanges(h));
+
+    // Calculate accuracy scores
+    const ingredientMatchScore = this.calculateParameterMatch(aiIngredients, humanIngredients);
+    const timeAccuracy = this.calculateParameterMatch(aiTimeChanges, humanTimeChanges);
+    const temperatureAccuracy = this.calculateParameterMatch(aiTempChanges, humanTempChanges);
+
+    return {
+      ingredients: {
+        ai_suggestions: aiIngredients,
+        human_suggestions: humanIngredients,
+        substitution_accuracy: ingredientMatchScore,
+        ingredient_match_score: ingredientMatchScore,
+      },
+      time: {
+        ai_time_changes: aiTimeChanges,
+        human_time_changes: humanTimeChanges,
+        time_efficiency_score: timeAccuracy,
+        time_accuracy: timeAccuracy,
+      },
+      temperature: {
+        ai_temp_changes: aiTempChanges,
+        human_temp_changes: humanTempChanges,
+        temperature_accuracy: temperatureAccuracy,
+        cooking_method_alignment: temperatureAccuracy,
+      },
+    };
+  }
+
+  /**
+   * Calculate parameter match score between AI and human suggestions
+   */
+  private static calculateParameterMatch(aiParams: string[], humanParams: string[]): number {
+    if (aiParams.length === 0 && humanParams.length === 0) return 1.0;
+    if (aiParams.length === 0 || humanParams.length === 0) return 0.0;
+
+    let matches = 0;
+    const totalComparisons = aiParams.length;
+
+    aiParams.forEach(aiParam => {
+      const bestMatch = humanParams.reduce((best, humanParam) => {
+        const similarity = this.calculateSimilarity(aiParam, humanParam);
+        return similarity > best ? similarity : best;
+      }, 0);
+
+      if (bestMatch > 0.3) matches++;
+    });
+
+    return matches / totalComparisons;
   }
 
   /**
@@ -144,6 +322,10 @@ export class EnhancementValidator {
     let totalSimilarity = 0;
     let totalRelevance = 0;
     let totalQuality = 0;
+    let totalTechnicalAccuracy = 0;
+    let totalIngredientAccuracy = 0;
+    let totalTimeAccuracy = 0;
+    let totalTemperatureAccuracy = 0;
 
     // Initialize category tracking
     const categoryAccuracy: CategoryAccuracy = {
@@ -179,15 +361,30 @@ export class EnhancementValidator {
 
       const bestSimilarity = matches.length > 0 ? matches[0].similarity : 0;
       const qualityScore = this.assessQuality(aiEnhancement);
-      
+
+      // Analyze parameters (ingredients, time, temperature)
+      const parameterAnalysis = this.analyzeParameters(
+        aiEnhancement,
+        matches.map(m => m.enhancement)
+      );
+
+      // Calculate technical accuracy score
+      const technicalAccuracy = (
+        parameterAnalysis.ingredients.ingredient_match_score * 0.4 +
+        parameterAnalysis.time.time_accuracy * 0.3 +
+        parameterAnalysis.temperature.temperature_accuracy * 0.3
+      );
+
       // Check category match
       const categoryMatch = matches.some(m => m.category === aiCategory);
       if (categoryMatch) {
         categoryAccuracy[aiCategory].matches++;
       }
 
-      // Relevance score based on having matches and category alignment
-      const relevanceScore = (matches.length > 0 ? 0.6 : 0) + (categoryMatch ? 0.4 : 0);
+      // Enhanced relevance score including technical accuracy
+      const relevanceScore = (matches.length > 0 ? 0.4 : 0) +
+                            (categoryMatch ? 0.3 : 0) +
+                            (technicalAccuracy * 0.3);
 
       const result: ValidationResult = {
         enhancement_id: `ai-${index}`,
@@ -195,16 +392,22 @@ export class EnhancementValidator {
         matched_human_enhancements: matches.map(m => m.enhancement),
         similarity_score: bestSimilarity,
         relevance_score: relevanceScore,
-        quality_assessment: qualityScore > 0.8 ? 'excellent' : 
-                           qualityScore > 0.6 ? 'good' : 
+        quality_assessment: qualityScore > 0.8 ? 'excellent' :
+                           qualityScore > 0.6 ? 'good' :
                            qualityScore > 0.4 ? 'fair' : 'poor',
-        category_match: categoryMatch
+        category_match: categoryMatch,
+        parameter_analysis: parameterAnalysis,
+        technical_accuracy: technicalAccuracy
       };
 
       validationResults.push(result);
       totalSimilarity += bestSimilarity;
       totalRelevance += relevanceScore;
       totalQuality += qualityScore;
+      totalTechnicalAccuracy += technicalAccuracy;
+      totalIngredientAccuracy += parameterAnalysis.ingredients.ingredient_match_score;
+      totalTimeAccuracy += parameterAnalysis.time.time_accuracy;
+      totalTemperatureAccuracy += parameterAnalysis.temperature.temperature_accuracy;
     });
 
     // Calculate category accuracies
@@ -218,7 +421,13 @@ export class EnhancementValidator {
     const avgSimilarity = count > 0 ? totalSimilarity / count : 0;
     const avgRelevance = count > 0 ? totalRelevance / count : 0;
     const avgQuality = count > 0 ? totalQuality / count : 0;
-    const overallScore = (avgSimilarity * 0.3 + avgRelevance * 0.4 + avgQuality * 0.3);
+    const avgTechnicalAccuracy = count > 0 ? totalTechnicalAccuracy / count : 0;
+    const avgIngredientAccuracy = count > 0 ? totalIngredientAccuracy / count : 0;
+    const avgTimeAccuracy = count > 0 ? totalTimeAccuracy / count : 0;
+    const avgTemperatureAccuracy = count > 0 ? totalTemperatureAccuracy / count : 0;
+
+    // Enhanced overall score including technical accuracy
+    const overallScore = (avgSimilarity * 0.25 + avgRelevance * 0.25 + avgQuality * 0.25 + avgTechnicalAccuracy * 0.25);
 
     return {
       recipe_id: recipeId,
@@ -229,6 +438,13 @@ export class EnhancementValidator {
       similarity_score: avgSimilarity,
       relevance_score: avgRelevance,
       quality_score: avgQuality,
+      technical_accuracy_score: avgTechnicalAccuracy,
+      parameter_analysis_summary: {
+        ingredient_accuracy: avgIngredientAccuracy,
+        time_accuracy: avgTimeAccuracy,
+        temperature_accuracy: avgTemperatureAccuracy,
+        overall_technical_score: avgTechnicalAccuracy,
+      },
       category_accuracy: categoryAccuracy
     };
   }

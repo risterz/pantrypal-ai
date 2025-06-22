@@ -185,6 +185,30 @@ export function EnhancementComparison({
   const humanEnhancementTexts = humanEnhancements.map(e => e.content);
   console.log('EnhancementComparison: Human enhancement texts:', humanEnhancementTexts);
 
+  // Clean AI enhancements to remove introductory text
+  const cleanedAIEnhancements = aiEnhancements.map(enhancement => {
+    // Remove any introductory sentences
+    let cleaned = enhancement
+      .replace(/^Here are.+?:/i, '')
+      .replace(/^Here is.+?:/i, '')
+      .replace(/^Below are.+?:/i, '')
+      .replace(/^I suggest.+?:/i, '')
+      .replace(/^These are.+?:/i, '')
+      .replace(/^.+enhancements for.+?:/i, '')
+      .replace(/^.+suggestions for.+?:/i, '')
+      .replace(/^.+ways to enhance.+?:/i, '')
+      .replace(/^.+improvements for.+?:/i, '')
+      .trim();
+
+    // Remove asterisks and other formatting
+    cleaned = cleaned.replace(/\*\*/g, '');
+
+    // Remove bullet points if they exist at the start
+    cleaned = cleaned.replace(/^[•\-\*\d\.]+\s*/, '');
+
+    return cleaned.trim();
+  }).filter(enhancement => enhancement.length > 10); // Filter out very short enhancements
+
 
   const handleSubmit = () => {
     if (!isAuthenticated) {
@@ -241,7 +265,7 @@ export function EnhancementComparison({
           </CardHeader>
           <CardContent className="pt-4">
             <ul className="list-disc pl-5 space-y-2">
-              {aiEnhancements.map((enhancement, index) => (
+              {cleanedAIEnhancements.map((enhancement, index) => (
                 <li key={`ai-${index}`} className="text-sm">{enhancement}</li>
               ))}
             </ul>

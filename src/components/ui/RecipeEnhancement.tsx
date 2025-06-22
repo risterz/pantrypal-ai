@@ -116,14 +116,27 @@ export function RecipeEnhancement({
     if (aiEnhancements && aiEnhancements.length > 0) {
       // Clean up enhancements by removing ** markers and introductory text
       return aiEnhancements.map(enhancement => {
-        // Remove any "Here are..." introductory text
-        let cleaned = enhancement.replace(/^Here are.+to make it.+:/, '').trim();
-        
-        // Remove asterisks
+        // Remove any introductory sentences
+        let cleaned = enhancement
+          .replace(/^Here are.+?:/i, '')
+          .replace(/^Here is.+?:/i, '')
+          .replace(/^Below are.+?:/i, '')
+          .replace(/^I suggest.+?:/i, '')
+          .replace(/^These are.+?:/i, '')
+          .replace(/^.+enhancements for.+?:/i, '')
+          .replace(/^.+suggestions for.+?:/i, '')
+          .replace(/^.+ways to enhance.+?:/i, '')
+          .replace(/^.+improvements for.+?:/i, '')
+          .trim();
+
+        // Remove asterisks and other formatting
         cleaned = cleaned.replace(/\*\*/g, '');
-        
-        return cleaned;
-      });
+
+        // Remove bullet points if they exist at the start
+        cleaned = cleaned.replace(/^[•\-\*\d\.]+\s*/, '');
+
+        return cleaned.trim();
+      }).filter(enhancement => enhancement.length > 10); // Filter out very short enhancements
     }
     
     const enhancements = [];

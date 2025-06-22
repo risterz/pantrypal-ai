@@ -2,6 +2,21 @@
 
 An intelligent recipe discovery platform that helps users find recipes based on available ingredients, enhanced with AI-powered cooking suggestions and tips.
 
+**🌐 Live Website**: [https://www.pantrypal-ai.space/](https://www.pantrypal-ai.space/)
+
+## 📱 Screenshots
+
+### Desktop Experience
+![Search Interface](https://github.com/risterz/pantrypal-ai/raw/index/docs/screenshots/search-interface.png)
+*Clean and intuitive search interface for finding recipes by ingredients*
+
+![Recipe Page Desktop](https://github.com/risterz/pantrypal-ai/raw/index/docs/screenshots/recipe-page-desktop.png)
+*Comprehensive recipe detail page with AI enhancement suggestions*
+
+### Mobile Experience
+![Recipe Page Mobile](https://github.com/risterz/pantrypal-ai/raw/index/docs/screenshots/recipe-page-mobile.png)
+*Mobile-optimized recipe page with justified text and touch-friendly design*
+
 ## 🌟 Features
 
 - **Smart Recipe Search**: Find recipes based on ingredients you already have

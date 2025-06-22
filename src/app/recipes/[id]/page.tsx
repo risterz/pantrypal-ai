@@ -23,7 +23,7 @@ import { EnhancementValidation } from '@/lib/api/enhancementValidationApi';
 
 
 
-export default function RecipeDetailsPage({ params }: { params: { id: string } }) {
+export default function RecipeDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const [recipe, setRecipe] = useState<RecipeDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -42,6 +42,7 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
   const [evaluationSubmitted, setEvaluationSubmitted] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
   const [validationResults, setValidationResults] = useState<EnhancementValidation | null>(null);
+  const [recipeId, setRecipeId] = useState<number>(0);
   const supabase = createClient();
   const router = useRouter();
 
@@ -109,12 +110,21 @@ export default function RecipeDetailsPage({ params }: { params: { id: string } }
     toast.success('Validation completed successfully!');
   };
   
-  // In Next.js 15.2.3, params is a Promise that must be unwrapped with React.use()
-  const unwrappedParams = React.use(params as any) as { id: string };
-  const recipeId = unwrappedParams?.id ? parseInt(unwrappedParams.id) : 0;
+  // Extract recipe ID from params
+  useEffect(() => {
+    async function extractParams() {
+      try {
+        const resolvedParams = await params;
+        const id = resolvedParams?.id ? parseInt(resolvedParams.id) : 0;
+        setRecipeId(id);
+      } catch (error) {
+        console.error('Error extracting params:', error);
+        setRecipeId(0);
+      }
+    }
 
-
-
+    extractParams();
+  }, [params]);
 
 
   // First useEffect to check authentication status

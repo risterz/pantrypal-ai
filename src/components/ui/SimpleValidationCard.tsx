@@ -3,14 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-<<<<<<< HEAD
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  CheckCircle, 
-  XCircle, 
-  AlertTriangle, 
-  BarChart3, 
-  Target, 
+import {
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  BarChart3,
+  Target,
   TrendingUp,
   RefreshCw,
   Award,
@@ -18,35 +17,20 @@ import {
   Bot,
   Eye,
   Lightbulb
-=======
-import { 
-  CheckCircle, 
-  XCircle, 
-  AlertCircle, 
-  BarChart3, 
-  RefreshCw
->>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { 
-  EnhancementValidation, 
-<<<<<<< HEAD
-  ValidationResult, 
+import {
+  EnhancementValidation,
+  ValidationResult,
   CategoryAccuracy,
-  EnhancementValidator 
-=======
-  enhancementValidationApi 
->>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
+  EnhancementValidator
 } from '@/lib/api/enhancementValidationApi';
 
 interface SimpleValidationCardProps {
   recipeId: string;
   aiEnhancements: string[];
   humanEnhancements: string[];
-<<<<<<< HEAD
-=======
   userId?: string;
->>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
   onValidationComplete?: (validation: EnhancementValidation) => void;
 }
 
@@ -57,15 +41,11 @@ export function SimpleValidationCard({
 <<<<<<< HEAD
 =======
   userId,
->>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
   onValidationComplete
 }: SimpleValidationCardProps) {
   const [validation, setValidation] = useState<EnhancementValidation | null>(null);
   const [isRunning, setIsRunning] = useState(false);
-<<<<<<< HEAD
   const [activeTab, setActiveTab] = useState('overview');
-=======
->>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
 
   const runValidation = async () => {
     if (aiEnhancements.length === 0 || humanEnhancements.length === 0) {
@@ -75,31 +55,17 @@ export function SimpleValidationCard({
 
     try {
       setIsRunning(true);
-<<<<<<< HEAD
       toast.info('Running validation analysis...');
-      
+
       // Use the validation logic directly without database storage
       const validationResult = EnhancementValidator.validateEnhancements(
         recipeId,
         aiEnhancements,
         humanEnhancements
       );
-      
+
       setValidation(validationResult);
       toast.success('Validation analysis completed successfully!');
-=======
-      toast.info('Running validation...');
-      
-      const validationResult = await enhancementValidationApi.validateRecipe(
-        recipeId,
-        aiEnhancements,
-        humanEnhancements,
-        userId
-      );
-      
-      setValidation(validationResult);
-      toast.success('Validation completed!');
->>>>>>> 77c68cbca9b5d4b61a9ac5d0a23ac3677328964a
       
       if (onValidationComplete) {
         onValidationComplete(validationResult);

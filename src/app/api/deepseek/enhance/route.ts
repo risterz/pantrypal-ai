@@ -46,7 +46,12 @@ export async function POST(request: NextRequest) {
         1. Healthier - suggest ingredient substitutions and cooking methods that reduce calories, fat, or sodium while maintaining flavor
         2. Faster - suggest time-saving techniques, preparation shortcuts, and efficient cooking methods
         3. Tastier - suggest professional flavor enhancement techniques and tips to elevate the recipe
-        
+
+        IMPORTANT: Provide ONLY the enhancement suggestions as a bulleted list. Do NOT include any introductory sentences like "Here are the enhancements" or "Below are suggestions". Start directly with the enhancement points.
+
+        Format each suggestion as:
+        - [Enhancement description]
+
         Provide 3-5 specific, practical suggestions that a home cook could implement.`
       },
       {
@@ -105,16 +110,40 @@ export async function POST(request: NextRequest) {
     // Parse the enhancements from the AI response
     const enhancementLines = enhancementText
       .split('\n')
-      .filter((line: string) => line.trim().length > 0 && (line.includes('-') || /^\d+\./.test(line.trim())))
+      .filter((line: string) => {
+        const trimmed = line.trim();
+        // Skip empty lines
+        if (trimmed.length === 0) return false;
+
+        // Skip introductory sentences that start with common phrases
+        if (trimmed.toLowerCase().startsWith('here are') ||
+            trimmed.toLowerCase().startsWith('here is') ||
+            trimmed.toLowerCase().startsWith('below are') ||
+            trimmed.toLowerCase().startsWith('i suggest') ||
+            trimmed.toLowerCase().startsWith('these are') ||
+            trimmed.toLowerCase().includes('enhancements for') ||
+            trimmed.toLowerCase().includes('suggestions for') ||
+            trimmed.toLowerCase().includes('ways to enhance') ||
+            trimmed.toLowerCase().includes('improvements for')) {
+          return false;
+        }
+
+        // Only include lines that look like actual enhancement items
+        return (line.includes('-') || /^\d+\./.test(trimmed) || line.includes('•'));
+      })
       .map((line: string) => {
         // Remove numbered/bulleted list markers and clean up formatting
         let cleaned = line.replace(/^[•\-\d\.]+\s*/, '').trim();
-        
+
         // Remove any asterisks that might be used for emphasis
         cleaned = cleaned.replace(/\*\*/g, '');
-        
+
+        // Remove any remaining introductory phrases that might be embedded
+        cleaned = cleaned.replace(/^(Here are|Here is|Below are|I suggest|These are)\s+/i, '');
+
         return cleaned;
-      });
+      })
+      .filter((line: string) => line.length > 10); // Filter out very short lines
     
     // Ensure we have at least some enhancements
     const finalEnhancements = enhancementLines.length > 0 
