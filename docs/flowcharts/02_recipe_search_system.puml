@@ -1,0 +1,134 @@
+@startuml Recipe_Search_System
+!theme plain
+title Recipe Search System
+
+start
+note right: **Input**: User session (authenticated/guest)\n**From**: Authentication System
+
+:User Accesses Recipe Search Page;
+
+if (User Authenticated?) then (yes)
+    :Load User Profile;
+    :Get Saved Dietary Preferences;
+    :Pre-populate Diet Filter;
+else (no)
+    :Set Default Diet Filter to "None";
+endif
+
+:Display Search Interface;
+:Show Search Mode Toggle (Ingredients/Name);
+
+if (Search Mode = Ingredients?) then (yes)
+    :Display Ingredient Input Interface;
+    :Show Ingredient Categories;
+    :User Adds/Removes Ingredients;
+
+    if (Ingredients List Empty?) then (yes)
+        :Show Validation Error;
+        :Request At Least One Ingredient;
+        stop
+    else (no)
+        :Validate Ingredients Input;
+    endif
+
+    :Prepare Spoonacular API Parameters;
+    note right: ingredients.join(','),\nnumber: 12,\nranking: 1
+
+    :Call /findByIngredients Endpoint;
+    note right: **External Dependency**\nSpoonacular Recipe API\nIngredient-based search
+
+    if (Diet Filter Applied?) then (yes)
+        :Extract Recipe IDs from Results;
+        :Call /complexSearch with Diet Filter;
+        :Filter Results by Dietary Preference;
+    else (no)
+        :Use Direct Ingredient Results;
+    endif
+
+    if (API Response Successful?) then (yes)
+        :Parse Recipe Data;
+        :Display Recipe Results Grid;
+        :Show Used Ingredient Count;
+
+        if (Results Found?) then (yes)
+            :Display Recipe Cards;
+            :Show "X of your ingredients" Info;
+            :Show Save Recipe Button;
+
+            if (User Authenticated?) then (yes)
+                :Save Search to recent_searches Table;
+                note right: type: 'ingredients',\ningredients, diet
+            endif
+
+            :User Clicks "View & Enhance";
+            :Navigate to Recipe Detail Page;
+            note right: **Connection Point**\nTo AI Enhancement System
+            stop
+
+        else (no)
+            :Display "No Recipes Found";
+            :Show Dietary Filter Suggestion;
+            :Suggest Different Ingredients;
+            stop
+        endif
+
+    else (no)
+        :Display API Error Message;
+        :Show "Failed to search recipes" Toast;
+        :Offer Retry Option;
+        stop
+    endif
+
+else (Search by Name)
+    :Display Recipe Name Input;
+    :User Enters Recipe Name;
+
+    if (Recipe Name Empty?) then (yes)
+        :Show Validation Error;
+        :Request Recipe Name Input;
+        stop
+    else (no)
+        :Validate Recipe Name Input;
+    endif
+
+    :Prepare Spoonacular API Parameters;
+    note right: query: recipeName,\nnumber: 12,\naddRecipeInformation: true,\nfillIngredients: true
+
+    :Call /complexSearch Endpoint;
+    note right: **External Dependency**\nSpoonacular Recipe API\nComplex search
+
+    if (API Response Successful?) then (yes)
+        :Parse Recipe Results;
+        :Display Recipe Results Grid;
+
+        if (Results Found?) then (yes)
+            :Display Recipe Cards;
+            :Show "Click to view details" Info;
+            :Show Save Recipe Button;
+
+            if (User Authenticated?) then (yes)
+                :Save Search to recent_searches Table;
+                note right: type: 'name',\nquery: recipeName, diet
+            endif
+
+            :User Clicks "View & Enhance";
+            :Navigate to Recipe Detail Page;
+            note right: **Connection Point**\nTo AI Enhancement System
+            stop
+
+        else (no)
+            :Display "No Recipes Found";
+            :Suggest Alternative Recipe Names;
+            :Suggest Ingredient-based Search;
+            stop
+        endif
+
+    else (no)
+        :Display API Error Message;
+        :Show "Failed to search recipes" Toast;
+        :Offer Retry Option;
+        stop
+    endif
+endif
+
+@enduml

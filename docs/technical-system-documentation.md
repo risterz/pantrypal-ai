@@ -182,23 +182,8 @@ recipe_enhancements (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 )
 
--- AI validation system
-enhancement_validations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  recipe_id TEXT NOT NULL,
-  ai_enhancements JSONB NOT NULL,
-  human_enhancements JSONB NOT NULL,
-  validation_results JSONB NOT NULL,
-  overall_score DECIMAL(3,2) NOT NULL,
-  similarity_score DECIMAL(3,2) NOT NULL,
-  relevance_score DECIMAL(3,2) NOT NULL,
-  quality_score DECIMAL(3,2) NOT NULL,
-  category_accuracy JSONB NOT NULL,
-  validated_by UUID REFERENCES auth.users(id),
-  validation_notes TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-)
+-- AI enhancement system (validation removed)
+-- enhancement_validations table removed per examiner requirements
 ```
 
 #### 3. User Activity Tracking
@@ -355,9 +340,9 @@ const handleEmailSignup = async (e: React.FormEvent) => {
 
 #### OAuth Integration
 ```typescript
-const handleGithubLogin = async () => {
+const handleGoogleLogin = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'github',
+    provider: 'google',
     options: {
       redirectTo: `${window.location.origin}/auth/callback`
     }

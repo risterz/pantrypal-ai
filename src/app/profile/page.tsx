@@ -21,6 +21,20 @@ export default function ProfilePage() {
   const supabase = createClient();
   const router = useRouter();
 
+  // Helper function to get display name for dietary preference
+  const getDietDisplayName = (diet: string): string => {
+    const displayMap: { [key: string]: string } = {
+      'none': 'No Preference',
+      'vegetarian': 'Vegetarian',
+      'vegan': 'Vegan',
+      'gluten-free': 'Gluten-Free',
+      'dairy-free': 'Dairy-Free',
+      'ketogenic': 'Ketogenic',
+      'paleo': 'Paleo'
+    };
+    return displayMap[diet] || 'Select dietary preference';
+  };
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -63,6 +77,8 @@ export default function ProfilePage() {
               'paleo': 'paleo'
             };
             setDietaryPreference(preferenceMap[firstPreference] || 'none');
+          } else {
+            setDietaryPreference('none');
           }
         }
       } catch (error) {
@@ -79,7 +95,7 @@ export default function ProfilePage() {
   const handleSaveProfile = async () => {
     try {
       setIsSaving(true);
-      
+
       // Convert single dietary preference to array for database storage
       const preferenceMap: { [key: string]: string } = {
         'vegetarian': 'vegetarian',
@@ -90,7 +106,8 @@ export default function ProfilePage() {
         'paleo': 'paleo'
       };
 
-      const preferencesArray = dietaryPreference === 'none' ? [] : [preferenceMap[dietaryPreference]];
+      // Create PostgreSQL array format for dietary preferences
+      const preferencesArray = dietaryPreference === 'none' ? null : [preferenceMap[dietaryPreference]];
 
       const updates = {
         id: user.id,
@@ -98,13 +115,13 @@ export default function ProfilePage() {
         dietary_preferences: preferencesArray,
         updated_at: new Date().toISOString(),
       };
-      
+
       const { error } = await supabase
         .from('profiles')
         .upsert(updates, { onConflict: 'id' });
-        
+
       if (error) throw error;
-      
+
       toast.success('Profile updated successfully');
     } catch (error: any) {
       console.error('Error updating profile:', error);
@@ -143,24 +160,27 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12 sm:px-6 text-center">
-        <ShieldAlert className="h-16 w-16 mx-auto text-amber-500 mb-4" />
-        <h1 className="text-2xl font-bold mb-2">Authentication Required</h1>
-        <p className="text-gray-600 mb-6">Please sign in to view your profile.</p>
-        <Button 
-          onClick={() => router.push('/login')}
-          className="bg-[#FF6B6B] hover:bg-[#ff5252]"
-        >
-          Sign In
-        </Button>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
+        <div className="text-center">
+          <ShieldAlert className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600 mb-4">Please sign in to view your profile.</p>
+          <Button onClick={() => router.push('/login')} className="bg-[#FF6B6B] hover:bg-[#ff5252]">
+            Sign In
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12 sm:px-6">
-      <h1 className="text-3xl font-bold mb-8">Your Profile</h1>
-      
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+      <div className="max-w-3xl mx-auto px-4 py-12 sm:px-6">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Profile Settings</h1>
+          <p className="text-gray-600">Manage your account information and preferences</p>
+        </div>
+
       <div className="space-y-6">
         {/* Account Information */}
         <Card>
@@ -206,7 +226,9 @@ export default function ProfilePage() {
               <Label htmlFor="dietary-preference">Dietary Preference</Label>
               <Select value={dietaryPreference} onValueChange={setDietaryPreference}>
                 <SelectTrigger id="dietary-preference" className="w-full">
-                  <SelectValue placeholder="Select dietary preference" />
+                  <SelectValue placeholder="Select dietary preference">
+                    {getDietDisplayName(dietaryPreference)}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">No Preference</SelectItem>
@@ -253,5 +275,6 @@ export default function ProfilePage() {
         </Card>
       </div>
     </div>
+  </div>
   );
-} 
+}

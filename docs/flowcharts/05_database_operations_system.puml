@@ -1,0 +1,198 @@
+@startuml Database_Operations_System
+!theme plain
+title Database Operations System - Supabase Integration
+
+start
+note top: **Input**: Data from all subsystems\n**Database**: Supabase PostgreSQL with RLS
+
+switch (Operation Type)
+case (User Management)
+    switch (User Operations)
+    case (Create Profile)
+        :Validate User Data;
+        :Insert into profiles table;
+        :Set default dietary preferences;
+        :Initialize user settings;
+        :Create user statistics record;
+        :Return profile ID;
+        stop
+        
+    case (Update Profile)
+        :Validate user permissions;
+        :Check data integrity;
+        :Update profiles table;
+        :Update dietary preferences;
+        :Log profile changes;
+        :Return success status;
+        stop
+        
+    case (Delete Profile)
+        :Validate user permissions;
+        :Backup user data;
+        :Soft delete user data;
+        :Maintain referential integrity;
+        :Update related records;
+        :Return confirmation;
+        stop
+        
+    case (Load Profile)
+        :Query profiles by user_id;
+        :Load dietary preferences;
+        :Load user statistics;
+        :Return complete profile;
+        stop
+    endswitch
+
+case (Recipe Management)
+    switch (Recipe Operations)
+    case (Save Recipe)
+        if (User Authenticated?) then (Yes)
+            :Validate recipe data;
+            :Check for duplicates;
+            :Insert into saved_recipes table;
+            :Link to user profile;
+            :Update user statistics;
+            :Return save confirmation;
+            stop
+        else (No)
+            :Return authentication error;
+            stop
+        endif
+        
+    case (Load Saved Recipes)
+        :Query saved_recipes by user_id;
+        :Join with recipe metadata;
+        :Load enhancement data;
+        :Sort by save date;
+        :Return user's recipe collection;
+        stop
+        
+    case (Remove Saved Recipe)
+        :Validate user ownership;
+        :Delete from saved_recipes table;
+        :Update user statistics;
+        :Return deletion confirmation;
+        stop
+        
+    case (Search Recipes)
+        :Parse search criteria;
+        :Apply filters;
+        :Query recipe database;
+        :Rank results;
+        :Return matching recipes;
+        stop
+    endswitch
+
+case (Enhancement Data)
+    switch (Enhancement Operations)
+    case (Store AI Enhancements)
+        :Validate enhancement data;
+        :Insert into ai_enhancements table;
+        :Link to recipe and user;
+        :Store enhancement metadata;
+        :Update enhancement statistics;
+        :Return storage confirmation;
+        stop
+        
+    case (Store Human Enhancements)
+        :Validate expert source;
+        :Insert into human_enhancements table;
+        :Store enhancement data;
+        :Link to recipe;
+        :Update validation dataset;
+        :Return storage confirmation;
+        stop
+        
+    case (Query Enhancement Data)
+        :Search by recipe ID;
+        :Filter by enhancement type;
+        :Apply user preferences;
+        :Sort by relevance;
+        :Return matching enhancements;
+        stop
+        
+    case (Update Enhancement)
+        :Validate permissions;
+        :Update enhancement record;
+        :Maintain version history;
+        :Return update status;
+        stop
+    endswitch
+
+case (Validation Results)
+    switch (Validation Operations)
+    case (Store Validation Results)
+        :Validate metrics data;
+        :Insert into enhancement_validations table;
+        :Store similarity metrics;
+        :Store quality scores;
+        :Store category accuracy;
+        :Link to user and recipe;
+        :Update validation statistics;
+        :Return validation ID;
+        stop
+        
+    case (Query Validation History)
+        :Search by user/recipe;
+        :Filter by date range;
+        :Apply sorting criteria;
+        :Load related data;
+        :Return validation records;
+        stop
+        
+    case (Update Validation Metrics)
+        :Validate permissions;
+        :Update existing record;
+        :Maintain audit trail;
+        :Recalculate statistics;
+        :Return update confirmation;
+        stop
+        
+    case (Export Validation Data)
+        :Query validation records;
+        :Format for academic use;
+        :Apply privacy filters;
+        :Generate export file;
+        :Return download link;
+        stop
+    endswitch
+
+case (Search & Analytics)
+    switch (Analytics Operations)
+    case (User Activity Tracking)
+        :Log search queries;
+        :Track recipe interactions;
+        :Store user preferences;
+        :Update usage statistics;
+        :Analyze user behavior;
+        stop
+        
+    case (Performance Metrics)
+        :Calculate AI accuracy trends;
+        :Generate usage reports;
+        :Track system performance;
+        :Analyze validation results;
+        :Return analytics data;
+        stop
+        
+    case (Data Export)
+        :Query requested data;
+        :Format for export;
+        :Apply privacy filters;
+        :Generate report;
+        :Return formatted data;
+        stop
+        
+    case (System Statistics)
+        :Calculate total users;
+        :Count recipes processed;
+        :Measure AI performance;
+        :Track validation accuracy;
+        :Return system metrics;
+        stop
+    endswitch
+endswitch
+
+note bottom: **Output**: Confirmed data persistence\n**Real-time**: Supabase subscriptions for live updates
+
+@enduml

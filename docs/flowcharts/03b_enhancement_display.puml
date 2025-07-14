@@ -1,0 +1,48 @@
+@startuml Enhancement_Display_Process
+!theme plain
+title AI Enhancement System - Enhancement Display Process
+
+start
+note right: **Input**: Enhancement data\n**From**: Enhancement Loading Process
+
+if (isLoadingEnhancements?) then (yes)
+    :Show Loading Skeleton;
+    note right: **UI Component**\nAnimated pulse loading\nBlue gradient card
+    stop
+    
+else (no)
+    :Display RecipeEnhancementCard;
+    note right: **Component**\nRecipeEnhancement.tsx\nwith props: aiEnhancements,\ncategorizedEnhancements
+    
+    if (Categorized Enhancements Available?) then (yes)
+        :Use Provided Categories;
+    else (no)
+        :Run Client-Side Categorization;
+        note right: **Categorization Logic**\nKeyword analysis in component\nHealthier/Faster/Tastier/Other
+    endif
+    
+    :Render Enhancement Categories;
+    
+    partition "Category Display" {
+        :💚 Healthier Options;
+        note right: Heart icon, red-200 border\nIngredient substitutions
+        
+        :⚡ Time-Saving Tips;
+        note right: Clock icon, blue-200 border\nPrep shortcuts
+        
+        :✨ Flavor Boosters;
+        note right: Zap icon, yellow-200 border\nSeasoning suggestions
+        
+        :🔧 Other Tips;
+        note right: ChefHat icon, purple-200 border\nGeneral advice
+    }
+    
+    :Enable Interactive Features;
+    note right: **User Interactions**\nExpand/Collapse categories\nMark enhancements as applied\nToast notifications
+endif
+
+stop
+
+note bottom: **Output**: Interactive enhancement interface\n**Returns to**: Main AI Enhancement System
+
+@enduml

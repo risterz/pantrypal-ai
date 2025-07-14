@@ -1,0 +1,49 @@
+@startuml Enhancement_Loading_Process
+!theme plain
+title AI Enhancement System - Enhancement Loading Process
+
+start
+
+:Check Database for Existing Enhancements;
+
+if (Existing Enhancements Found?) then (yes)
+    :Load Stored Enhancements;
+    :Set Enhancement State;
+
+    if (Categorized Enhancements Available?) then (yes)
+        :Use Stored Categories;
+    else (no)
+        :Set Categorized to null;
+    endif
+
+    :Show "Loaded stored enhancements" Toast;
+
+else (no)
+    if (DeepSeek AI Enabled?) then (yes)
+        :Show "Generating AI suggestions..." Toast;
+        :Call deepseekApi.enhanceRecipe();
+
+        if (DeepSeek API Success?) then (yes)
+            :Store Enhancement in Database;
+            :Set Enhancement State;
+            :Set Categorized to null;
+            :Show "Generated new enhancements" Toast;
+            :Set showComparison = true;
+
+        else (no)
+            :Log DeepSeek Error;
+            :Fall Back to Rule-Based Enhancements;
+            :Store Fallback Enhancements;
+        endif
+
+    else (no)
+        :Generate Rule-Based Enhancements;
+        :Store Fallback Enhancements;
+    endif
+endif
+
+:Set isLoadingEnhancements = false;
+
+stop
+
+@enduml

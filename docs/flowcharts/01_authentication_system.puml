@@ -1,0 +1,113 @@
+@startuml Authentication_User_Management
+!theme plain
+title Authentication & User Management System
+
+start
+
+:User Accesses PantryPal AI;
+:Load Application;
+
+if (User Authenticated?) then (Yes)
+    :Load User Session;
+    :Display Personalized Dashboard;
+    :Show User Statistics;
+    :Display Saved Recipes;
+    :Load User Preferences;
+
+    switch (User Action)
+    case (Manage Profile)
+        :Edit Profile Information;
+        :Update Dietary Preferences;
+        :Update Avatar/Username;
+        :Save Changes to Database;
+        :Confirm Update Success;
+        stop
+    case (Logout)
+        :Clear User Session;
+        :Redirect to Landing Page;
+        stop
+    case (Continue to App)
+        :Access Full App Features;
+        note right: **Connection Point**\nTo Recipe Search System\n(Full Features)
+        stop
+    case (Search Recipes)
+        :Go to Recipe Search;
+        note right: **Connection Point**\nTo Recipe Search System
+        stop
+    case (View Validation)
+        :Access Validation System;
+        note right: **Connection Point**\nTo Validation System
+        stop
+    endswitch
+
+else (No)
+    :Display Guest Dashboard;
+    :Show Limited Features;
+    :Display Login/Signup Prompt;
+
+    switch (User Action)
+    case (Login/Signup)
+        :Show Authentication Options;
+
+    switch (Authentication Method)
+    case (Google OAuth)
+        :Redirect to Google OAuth;
+        :Google Authentication;
+        :Receive OAuth Token;
+        :Validate with Supabase;
+        if (New User?) then (Yes)
+            :Create User Profile;
+            :Set Default Preferences;
+        else (No)
+            :Load Existing Profile;
+        endif
+        :Authentication Successful;
+        :Create User Session;
+        :Redirect to Dashboard;
+        stop
+
+    case (Email Login)
+        :Enter Email/Password;
+        :Validate Credentials;
+        if (Valid?) then (Yes)
+            :Create User Session;
+            :Load User Profile;
+            :Authentication Successful;
+            :Redirect to Dashboard;
+            stop
+        else (No)
+            :Show Error Message;
+            :Return to Login Form;
+            stop
+        endif
+
+    case (Email Signup)
+        :Enter Registration Details;
+        :Validate Email Format;
+        :Check Password Strength;
+        :Create Account in Supabase;
+        :Send Verification Email;
+        :Create User Profile;
+        :Set Default Preferences;
+        :Authentication Successful;
+        :Create User Session;
+        :Redirect to Dashboard;
+        stop
+    endswitch
+
+    case (Continue as Guest)
+        :Access Limited App Features;
+        note right: **Connection Point**\nTo Recipe Search System\n(Limited Features)
+        stop
+    case (Search Recipes)
+        :Go to Recipe Search;
+        note right: **Connection Point**\nTo Recipe Search System\n(Guest Mode)
+        stop
+    case (View Sample Validation)
+        :Show Limited Validation Preview;
+        note right: **Connection Point**\nTo Validation System\n(Sample Only)
+        stop
+    endswitch
+endif
+
+@enduml

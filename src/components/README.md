@@ -24,10 +24,7 @@ src/components/
 │   └── Navbar.tsx
 ├── pantry/               # Pantry-specific features
 │   └── IngredientCategories.tsx
-├── validation/           # Validation & comparison components
-│   ├── ValidationDashboard.tsx
-│   ├── EnhancementValidationCard.tsx
-│   ├── SimpleValidationCard.tsx
+├── comparison/           # Enhancement comparison components
 │   ├── EnhancementComparison.tsx
 │   └── ParameterAnalysisDisplay.tsx
 ├── enhancement/          # Recipe enhancement components

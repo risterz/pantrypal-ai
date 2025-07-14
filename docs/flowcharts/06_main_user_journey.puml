@@ -1,0 +1,154 @@
+@startuml Main_User_Journey_Overview
+!theme plain
+title PantryPal AI - Main User Journey Overview
+
+start
+
+:User Visits PantryPal AI;
+:Load Application;
+
+:Authentication System;
+note right: **Subsystem 1**\nHandles login/signup\nProfile management\nGoogle OAuth integration
+
+if (Authenticated?) then (Yes)
+    :Load Personalized Dashboard;
+    :Display User Statistics;
+    :Show Saved Recipes;
+    :Load User Preferences;
+else (No)
+    :Display Guest Dashboard;
+    :Show Guest Features;
+    :Display Login/Signup Option;
+    note right: Guest users can access\nrecipe search and limited validation
+endif
+
+:User Navigates to Recipe Search;
+
+:Recipe Search System;
+note right: **Subsystem 2**\nIngredient-based search\nSpoonacular API integration\nDietary filtering
+
+switch (Search Method)
+case (By Ingredients)
+    :Enter Available Ingredients;
+    :Apply Dietary Filters;
+    stop
+case (By Recipe Name)
+    :Enter Recipe Name;
+    :Search Recipe Database;
+    stop
+case (Browse Categories)
+    :Select Recipe Category;
+    :Apply User Preferences;
+    stop
+endswitch
+
+:Display Recipe Results;
+
+if (Results Found?) then (Yes)
+    :User Selects Recipe;
+    :Load Recipe Details;
+    :Display Ingredients & Instructions;
+else (No)
+    :Show "No Results" Message;
+    :Suggest Alternative Searches;
+    stop
+endif
+
+:AI Enhancement System;
+note right: **Subsystem 3**\nDeepSeek AI integration\nEnhancement generation\nCategorized suggestions
+
+:Generate AI Enhancements;
+:Display Enhancement Cards;
+:Show Healthier/Faster/Tastier Options;
+
+switch (User Action)
+case (Save Recipe)
+    if (Authenticated?) then (Yes)
+        :Database Operations;
+        note right: **Subsystem 5**\nSupabase CRUD operations\nUser data persistence
+        :Recipe Saved Successfully;
+        :Update User Statistics;
+        stop
+    else (No)
+        :Show Login to Save Message;
+        :Continue Browsing as Guest;
+        stop
+    endif
+    
+case (Validate AI Suggestions)
+    if (Authenticated?) then (Yes)
+        :Validation System;
+        note right: **Subsystem 4**\nAI vs Human comparison\nAcademic validation\nSimilarity metrics
+        
+        :Load Human Enhancement Data;
+        :Calculate Validation Metrics;
+        :Display Validation Results;
+        :Show Academic Insights;
+        
+        :Database Operations;
+        note right: Store validation data\nfor research purposes
+        
+        switch (Validation Action)
+        case (Export Results)
+            :Generate Academic Report;
+            :Download Validation Data;
+            stop
+        case (View Details)
+            :Show Detailed Analysis;
+            :Display Similarity Metrics;
+            stop
+        case (Run Another Validation)
+            :Return to Recipe Search;
+            stop
+        endswitch
+        
+    else (No)
+        :Show Limited Validation Preview;
+        :Display Sample Results;
+        :Show Login for Full Access Message;
+        stop
+    endif
+    
+case (Browse More Recipes)
+    :Return to Recipe Search;
+    note right: **Loop back to**\nRecipe Search System
+    stop
+    
+case (Manage Profile)
+    if (Authenticated?) then (Yes)
+        :Authentication System;
+        note right: Profile management\nDietary preferences\nAccount settings
+        :Database Operations;
+        note right: Update user data\nSave preferences
+        stop
+    else (No)
+        :Redirect to Login;
+        stop
+    endif
+    
+case (View Dashboard)
+    if (Authenticated?) then (Yes)
+        :Load User Dashboard;
+        :Display Saved Recipes;
+        :Show Usage Statistics;
+        :Display Recent Validations;
+        stop
+    else (No)
+        :Show Guest Dashboard;
+        :Display Public Statistics;
+        stop
+    endif
+endswitch
+
+note bottom
+**System Integration Points:**
+• Authentication gates protected features
+• Database operations persist all user data
+• Real-time updates via Supabase subscriptions
+• Error handling across all subsystems
+• Academic validation for research purposes
+• AI enhancement quality tracking
+• User behavior analytics
+end note
+
+@enduml

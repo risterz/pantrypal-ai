@@ -1,0 +1,36 @@
+@startuml AI_Enhancement_System_Main
+!theme plain
+title AI Enhancement System - Main Flow
+
+start
+
+:User Navigates to Recipe Detail Page;
+:Extract Recipe ID from URL Parameters;
+:Check Authentication Status;
+
+if (Auth Check Complete?) then (yes)
+    :Fetch Recipe Data from Spoonacular API;
+
+    :Load Recipe Details;
+    :Set Recipe State;
+    :Trigger fetchEnhancements();
+    :Trigger fetchScrapedEnhancements();
+
+    :Enhancement Loading Process;
+
+    :Enhancement Display Process;
+
+    if (User Authenticated?) then (yes)
+        :Validation System Process;
+        stop
+    else (no)
+        :Show Enhancement Cards Only;
+        stop
+    endif
+
+else (no)
+    :Wait for Auth Check;
+    stop
+endif
+
+@enduml

@@ -1,0 +1,74 @@
+@startuml PantryPal_AI_Simple_Overview
+!theme plain
+title PantryPal AI - Complete System Overview (Start to End)
+
+start
+
+:User Opens PantryPal AI;
+
+if (Want to Login?) then (Yes)
+    :User Dashboard\nSaved Recipes & Stats;
+else (No)
+    :Guest Dashboard\nBrowse Only;
+endif
+
+:Recipe Search;
+
+switch (How to Search?)
+case (By Ingredients)
+    :Enter Available Ingredients;
+    :Add Dietary Filters;
+case (By Recipe Name)
+    :Enter Recipe Name;
+endswitch
+
+:Get Recipes from Spoonacular API;
+
+if (Recipes Found?) then (Yes)
+    :Show Recipe List;
+    :User Selects Recipe;
+else (No)
+    :No Results - Try Again;
+    stop
+endif
+
+:Recipe Details\nIngredients & Instructions;
+
+:AI Enhancement\nGenerate Suggestions;
+
+:Show Enhancement Cards\nHealthier, Faster, Tastier;
+
+switch (What Next?)
+case (Save Recipe)
+    if (Logged In?) then (Yes)
+        :Save to Database;
+        :Recipe Saved Successfully;
+        stop
+    else (No)
+        :Login Required Message;
+        stop
+    endif
+
+case (Validate AI)
+    if (Logged In?) then (Yes)
+        :Full Validation System\nAI vs Human Data;
+        :Validation Results\nAcademic Report;
+        
+        if (Export Data?) then (Yes)
+            :Download Academic Report;
+            stop
+        else (No)
+            :Validation Complete;
+            stop
+        endif
+    else (No)
+        :Sample Validation Only\nLimited Preview;
+        stop
+    endif
+
+case (Search More)
+    :Return to Recipe Search;
+    stop
+endswitch
+
+@enduml

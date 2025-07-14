@@ -16,10 +16,7 @@ import { scrapedEnhancementApi, ScrapedEnhancement } from '@/lib/api/scrapedEnha
 import getFixedEnhancements from '@/lib/data/fixedEnhancements';
 import { RecipeEnhancement as RecipeEnhancementCard } from '@/components/ui/RecipeEnhancement';
 import { EnhancementComparison, EvaluationData } from '@/components/ui/EnhancementComparison';
-import { EnhancementValidationCard } from '@/components/ui/EnhancementValidationCard';
-import { ValidationDashboard } from '@/components/ui/ValidationDashboard';
-import { SimpleValidationCard } from '@/components/ui/SimpleValidationCard';
-import { EnhancementValidation } from '@/lib/api/enhancementValidationApi';
+
 
 
 
@@ -40,8 +37,7 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
   const [authChecked, setAuthChecked] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const [evaluationSubmitted, setEvaluationSubmitted] = useState(false);
-  const [showValidation, setShowValidation] = useState(false);
-  const [validationResults, setValidationResults] = useState<EnhancementValidation | null>(null);
+
   const [recipeId, setRecipeId] = useState<number>(0);
   const supabase = createClient();
   const router = useRouter();
@@ -105,10 +101,7 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
     }
   };
 
-  const handleValidationComplete = (validation: EnhancementValidation) => {
-    setValidationResults(validation);
-    toast.success('Validation completed successfully!');
-  };
+
   
   // Extract recipe ID from params
   useEffect(() => {
@@ -688,19 +681,7 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
                   {showComparison ? 'Hide Comparison' : 'Compare with Human'}
                 </span>
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => setShowValidation(!showValidation)}
-                className="mt-2 text-xs sm:text-sm px-3 sm:px-4 py-2 w-full sm:w-auto"
-                size="sm"
-              >
-                <span className="hidden sm:inline">
-                  {showValidation ? 'Hide AI Validation' : 'Validate AI Enhancements'}
-                </span>
-                <span className="sm:hidden">
-                  {showValidation ? 'Hide Validation' : 'Validate AI'}
-                </span>
-              </Button>
+
             </div>
           </div>
         )}
@@ -736,18 +717,7 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
         </div>
       )}
 
-      {/* AI Enhancement Validation Section */}
-      {showValidation && !isLoadingEnhancements && !isLoadingScrapedEnhancements && (
-        <div className="mb-8">
-          <ValidationDashboard
-            recipeId={String(recipe.id)}
-            aiEnhancements={getAIEnhancementsForComparison()}
-            humanEnhancements={scrapedEnhancements}
-            userId={user?.id}
-            onValidationComplete={handleValidationComplete}
-          />
-        </div>
-      )}
+
 
       <div className="text-center mt-8 sm:mt-12 px-4 sm:px-0">
         <Button
