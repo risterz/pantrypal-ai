@@ -16,6 +16,7 @@ import { scrapedEnhancementApi, ScrapedEnhancement } from '@/lib/api/scrapedEnha
 import getFixedEnhancements from '@/lib/data/fixedEnhancements';
 import { RecipeEnhancement as RecipeEnhancementCard } from '@/components/ui/RecipeEnhancement';
 import { EnhancementComparison, EvaluationData } from '@/components/ui/EnhancementComparison';
+import { EnhancementStats } from '@/components/ui/EnhancementStats';
 
 
 
@@ -717,7 +718,18 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
         </div>
       )}
 
-
+      {/* AI Enhancement Statistics */}
+      {!isLoadingEnhancements && (enhancements.length > 0 || categorizedEnhancements) && (
+        <div className="mb-8">
+          <EnhancementStats
+            compact={true}
+            showTitle={false}
+            categorizedEnhancements={categorizedEnhancements}
+            basicEnhancements={enhancements}
+            recipeTitle={recipe.title}
+          />
+        </div>
+      )}
 
       <div className="text-center mt-8 sm:mt-12 px-4 sm:px-0">
         <Button

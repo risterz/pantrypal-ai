@@ -46,6 +46,20 @@ Modern web stack optimized for developer experience, performance, and scalabilit
 - TypeScript support
 - Consistent design patterns
 
+**Three.js & React Three Fiber**
+- 3D graphics library for WebGL rendering
+- React Three Fiber for React integration
+- React Three Drei for additional utilities
+- GPU-accelerated 3D animations
+- Interactive 3D user interfaces
+
+**Framer Motion**
+- Production-ready motion library for React
+- Declarative animations and gestures
+- Layout animations and shared element transitions
+- Staggered animations and orchestration
+- Performance-optimized animations
+
 ### Backend Services
 **Supabase 2.49.4**
 - PostgreSQL database with real-time subscriptions

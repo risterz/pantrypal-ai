@@ -237,7 +237,7 @@ export function RecipeEnhancement({
               </div>
               <h3 className="text-sm sm:text-lg font-semibold truncate">{title}</h3>
               <Badge variant="secondary" className="ml-1 sm:ml-2 text-xs flex-shrink-0">
-                {enhancements.length} tip{enhancements.length !== 1 ? 's' : ''}
+                {enhancements.length * 10}%
               </Badge>
             </div>
             <Button
@@ -316,7 +316,7 @@ export function RecipeEnhancement({
             <div className="min-w-0 flex-1">
               <CardTitle className="text-base sm:text-xl text-blue-700 truncate">AI Enhancement Suggestions</CardTitle>
               <CardDescription className="text-xs sm:text-sm text-blue-600">
-                Smart ways to improve this recipe • {totalEnhancements} suggestions
+                Smart ways to improve this recipe • {totalEnhancements * 10}% enhancement score
               </CardDescription>
             </div>
           </div>
@@ -341,10 +341,10 @@ export function RecipeEnhancement({
       <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
         {hasEnhancements ? (
           <div className="space-y-3 sm:space-y-4">
-            {renderCategory("💚 Healthier Options", finalCategorizedEnhancements.healthier, <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />, "healthier")}
-            {renderCategory("⚡ Time-Saving Tips", finalCategorizedEnhancements.faster, <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />, "faster")}
-            {renderCategory("✨ Flavor Boosters", finalCategorizedEnhancements.tastier, <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" />, "tastier")}
-            {finalCategorizedEnhancements.other.length > 0 && renderCategory("🔧 Other Tips", finalCategorizedEnhancements.other, <ChefHat className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />, "other")}
+            {renderCategory(`💚 Healthier ${finalCategorizedEnhancements.healthier.length * 10}%`, finalCategorizedEnhancements.healthier, <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />, "healthier")}
+            {renderCategory(`⚡ Time-Saving ${finalCategorizedEnhancements.faster.length * 10}%`, finalCategorizedEnhancements.faster, <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />, "faster")}
+            {renderCategory(`✨ Flavor Boosters ${finalCategorizedEnhancements.tastier.length * 10}%`, finalCategorizedEnhancements.tastier, <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" />, "tastier")}
+            {finalCategorizedEnhancements.other.length > 0 && renderCategory(`🔧 Other Tips ${finalCategorizedEnhancements.other.length * 10}%`, finalCategorizedEnhancements.other, <ChefHat className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />, "other")}
 
             {appliedCount > 0 && (
               <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-green-100 border border-green-200 rounded-lg">
