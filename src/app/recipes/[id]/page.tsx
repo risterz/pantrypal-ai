@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,6 +25,7 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
   const [recipe, setRecipe] = useState<RecipeDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [userDietaryPreferences, setUserDietaryPreferences] = useState<string[] | null>(null);
   const [enhancements, setEnhancements] = useState<string[]>([]);
   const [categorizedEnhancements, setCategorizedEnhancements] = useState<CategorizedEnhancements | null>(null);
   const [scrapedEnhancements, setScrapedEnhancements] = useState<string[]>([]);
@@ -42,6 +43,60 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
   const [recipeId, setRecipeId] = useState<number>(0);
   const supabase = createClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Function to fetch user dietary preferences
+  const fetchUserDietaryPreferences = async (userId: string) => {
+    try {
+      const { data: profileData, error } = await supabase
+        .from('profiles')
+        .select('dietary_preferences')
+        .eq('id', userId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching user dietary preferences:', error);
+        return;
+      }
+
+      if (profileData && profileData.dietary_preferences) {
+        setUserDietaryPreferences(profileData.dietary_preferences);
+        console.log('User dietary preferences loaded:', profileData.dietary_preferences);
+      } else {
+        setUserDietaryPreferences(null);
+      }
+    } catch (error) {
+      console.error('Failed to fetch user dietary preferences:', error);
+      setUserDietaryPreferences(null);
+    }
+  };
+
+  // Function to get effective dietary preferences (URL params take priority over profile)
+  const getEffectiveDietaryPreferences = (): string[] | null => {
+    // Check URL parameters first (from search context)
+    const urlDiet = searchParams.get('diet');
+    if (urlDiet && urlDiet !== 'none') {
+      // Map search page diet values to profile format
+      const dietMap: { [key: string]: string } = {
+        'vegetarian': 'vegetarian',
+        'vegan': 'vegan',
+        'gluten-free': 'glutenFree',
+        'dairy-free': 'dairyFree',
+        'ketogenic': 'keto',
+        'paleo': 'paleo'
+      };
+
+      const mappedDiet = dietMap[urlDiet];
+      if (mappedDiet) {
+        console.log('Using dietary preference from search context:', urlDiet, '→', mappedDiet);
+        return [mappedDiet];
+      }
+    }
+
+    // Fall back to user profile preferences
+    console.log('Using dietary preferences from user profile:', userDietaryPreferences);
+    return userDietaryPreferences;
+  };
 
   const fetchScrapedEnhancements = async (recipeId: number) => {
     try {
@@ -127,21 +182,33 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
       try {
         const { data } = await supabase.auth.getUser();
         setUser(data.user);
+
+        // Fetch dietary preferences if user is authenticated
+        if (data.user) {
+          await fetchUserDietaryPreferences(data.user.id);
+        }
       } catch (error) {
         console.error('Auth check error:', error);
       } finally {
         setAuthChecked(true);
       }
     }
-    
+
     checkAuth();
-    
+
     // Set up auth state change listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user || null);
       setAuthChecked(true);
+
+      // Fetch dietary preferences when user changes
+      if (session?.user) {
+        await fetchUserDietaryPreferences(session.user.id);
+      } else {
+        setUserDietaryPreferences(null);
+      }
     });
-    
+
     return () => {
       subscription.unsubscribe();
     };
@@ -215,10 +282,18 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
       if (useDeepseekAI) {
         try {
           console.log('Generating new enhancements with DeepSeek API for recipe ID:', recipeData.id);
-          toast.info('Generating AI-enhanced recipe suggestions...');
+
+          // Get effective dietary preferences for this enhancement
+          const effectiveDietaryPreferences = getEffectiveDietaryPreferences();
+          console.log('Effective dietary preferences for AI enhancement:', effectiveDietaryPreferences);
+
+          const toastMessage = effectiveDietaryPreferences && effectiveDietaryPreferences.length > 0
+            ? 'Generating AI-enhanced recipe suggestions based on your dietary preferences...'
+            : 'Generating AI-enhanced recipe suggestions...';
+          toast.info(toastMessage);
           
-          // Generate enhancements using DeepSeek API
-          const deepseekEnhancements = await deepseekApi.enhanceRecipe(recipeData);
+          // Generate enhancements using DeepSeek API with effective dietary preferences
+          const deepseekEnhancements = await deepseekApi.enhanceRecipe(recipeData, effectiveDietaryPreferences);
           
           // Store the generated enhancements in the database
           await recipeEnhancementDbApi.storeEnhancement(deepseekEnhancements);
@@ -660,14 +735,50 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
           </Card>
         ) : (
           <div>
-            <RecipeEnhancementCard 
+            <RecipeEnhancementCard
               recipeTitle={recipe.title}
               instructions={getInstructionsList()}
               ingredients={getIngredientsList()}
               aiEnhancements={enhancements}
               categorizedEnhancements={categorizedEnhancements}
             />
-            
+
+            {/* Dietary Preferences Indicator */}
+            {(() => {
+              const effectivePrefs = getEffectiveDietaryPreferences();
+              const urlDiet = searchParams.get('diet');
+
+              if (effectivePrefs && effectivePrefs.length > 0) {
+                return (
+                  <div className="mt-3 px-4 sm:px-0">
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-sm text-green-700 font-medium">
+                          AI enhancements personalized for your dietary preferences: {' '}
+                          {effectivePrefs.map(pref => {
+                            const displayMap: { [key: string]: string } = {
+                              'vegetarian': 'Vegetarian',
+                              'vegan': 'Vegan',
+                              'glutenFree': 'Gluten-Free',
+                              'dairyFree': 'Dairy-Free',
+                              'keto': 'Ketogenic',
+                              'paleo': 'Paleo'
+                            };
+                            return displayMap[pref] || pref;
+                          }).join(', ')}
+                          {urlDiet && urlDiet !== 'none' && (
+                            <span className="text-xs text-green-600 ml-1">(from search)</span>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+
             <div className="mt-4 flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 px-4 sm:px-0">
               <Button
                 variant="outline"

@@ -11,7 +11,7 @@ interface DeepseekMessage {
 }
 
 export const deepseekApi = {
-  enhanceRecipe: async (recipe: RecipeDetail): Promise<RecipeEnhancement> => {
+  enhanceRecipe: async (recipe: RecipeDetail, userDietaryPreferences?: string[] | null): Promise<RecipeEnhancement> => {
     try {
       // Make API call to our secure server-side route
       const response = await fetch(DEEPSEEK_API_URL, {
@@ -19,7 +19,10 @@ export const deepseekApi = {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(recipe)
+        body: JSON.stringify({
+          recipe,
+          userDietaryPreferences
+        })
       });
 
       if (!response.ok) {

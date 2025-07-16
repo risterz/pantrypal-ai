@@ -275,7 +275,17 @@ export default function RecipeSearchPage() {
   };
 
   const viewRecipeDetails = (recipeId: number) => {
-    router.push(`/recipes/${recipeId}`);
+    // Pass dietary preference to recipe detail page if it's not 'none'
+    const searchParams = new URLSearchParams();
+    if (diet !== 'none') {
+      searchParams.set('diet', diet);
+    }
+
+    const url = searchParams.toString()
+      ? `/recipes/${recipeId}?${searchParams.toString()}`
+      : `/recipes/${recipeId}`;
+
+    router.push(url);
   };
 
   return (
