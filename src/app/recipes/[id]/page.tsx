@@ -255,8 +255,14 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
     try {
       setIsLoadingEnhancements(true);
       
-      // First check if we already have enhancements stored in the database
-      const existingEnhancements = await recipeEnhancementDbApi.getEnhancementByRecipeId(recipeData.id);
+      // Get effective dietary preferences for this enhancement
+      const effectiveDietaryPreferences = getEffectiveDietaryPreferences();
+
+      // First check if we already have enhancements stored in the database with matching dietary preferences
+      const existingEnhancements = await recipeEnhancementDbApi.getEnhancementByRecipeId(
+        recipeData.id,
+        effectiveDietaryPreferences
+      );
       
       if (existingEnhancements) {
         // Use the stored enhancements from the database
@@ -282,9 +288,6 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
       if (useDeepseekAI) {
         try {
           console.log('Generating new enhancements with DeepSeek API for recipe ID:', recipeData.id);
-
-          // Get effective dietary preferences for this enhancement
-          const effectiveDietaryPreferences = getEffectiveDietaryPreferences();
           console.log('Effective dietary preferences for AI enhancement:', effectiveDietaryPreferences);
 
           const toastMessage = effectiveDietaryPreferences && effectiveDietaryPreferences.length > 0
@@ -294,9 +297,9 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
           
           // Generate enhancements using DeepSeek API with effective dietary preferences
           const deepseekEnhancements = await deepseekApi.enhanceRecipe(recipeData, effectiveDietaryPreferences);
-          
-          // Store the generated enhancements in the database
-          await recipeEnhancementDbApi.storeEnhancement(deepseekEnhancements);
+
+          // Store the generated enhancements in the database with dietary preferences
+          await recipeEnhancementDbApi.storeEnhancement(deepseekEnhancements, effectiveDietaryPreferences);
           
           // Set the enhancements
           setEnhancements(deepseekEnhancements.enhancements);
