@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +12,21 @@ import { ShieldAlert, UserCircle, Save, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ProfilePage() {
+  // Add CSS to fix Select dropdown positioning
+  React.useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      [data-radix-select-content] {
+        animation-duration: 0s !important;
+        transition-duration: 0s !important;
+      }
+      [data-radix-select-content][data-state="open"] {
+        animation: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
   const [username, setUsername] = useState('');
   const [dietaryPreference, setDietaryPreference] = useState<string>('none');
   const [isLoading, setIsLoading] = useState(true);
@@ -254,13 +269,7 @@ export default function ProfilePage() {
                 <SelectTrigger>
                   <SelectValue placeholder="Select a dietary preference" />
                 </SelectTrigger>
-                <SelectContent
-                  position="popper"
-                  side="bottom"
-                  align="start"
-                  sideOffset={4}
-                  className="min-w-[var(--radix-select-trigger-width)] !animate-none data-[state=open]:!animate-none data-[state=closed]:!animate-none data-[state=open]:!fade-in-0 data-[state=open]:!zoom-in-100 data-[side=bottom]:!slide-in-from-top-0"
-                >
+                <SelectContent>
                   <SelectItem value="none">No Preference</SelectItem>
                   <SelectItem value="vegetarian">Vegetarian</SelectItem>
                   <SelectItem value="vegan">Vegan</SelectItem>
