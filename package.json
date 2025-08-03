@@ -10,7 +10,8 @@
     "check-recipes": "node scripts/enhancement/check_recipes_table.js",
     "create-human-enhancements": "node scripts/enhancement/create_human_enhancements.js",
     "update-recipe-database": "node scripts/enhancement/update-recipe-database.js",
-    "enhancement-system": "node scripts/enhancement/recipe-enhancement-system.js"
+    "enhancement-system": "node scripts/enhancement/recipe-enhancement-system.js",
+    "fix-missing-profiles": "node scripts/migrations/fix-missing-profiles.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
