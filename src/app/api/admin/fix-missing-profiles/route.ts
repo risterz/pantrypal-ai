@@ -1,17 +1,48 @@
 import { createClient } from '@supabase/supabase-js';
+import { createClient as createServerClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+
+// Admin emails that can access this endpoint
+const ADMIN_EMAILS = [
+  'harishariza02@gmail.com',
+  'firstpantrypal@gmail.com',
+  // Add more admin emails here
+];
+
+// Helper function to check admin access
+async function checkAdminAccess() {
+  const supabase = await createServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  
+  if (authError || !user) {
+    return { isAdmin: false, error: 'Unauthorized - Please sign in', status: 401 };
+  }
+
+  // Check if user has admin role in database
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  const isAdmin = profile?.role === 'admin' || ADMIN_EMAILS.includes(user.email || '');
+  
+  if (!isAdmin) {
+    return { isAdmin: false, error: 'Forbidden - Admin privileges required', status: 403 };
+  }
+
+  return { isAdmin: true, user };
+}
 
 // This API route allows running the missing profiles fix migration from Vercel
 export async function POST(request: NextRequest) {
   try {
-    // Security check - only allow in development or with admin key
-    const adminKey = request.headers.get('x-admin-key');
-    const expectedAdminKey = process.env.ADMIN_API_KEY;
-    
-    if (process.env.NODE_ENV === 'production' && adminKey !== expectedAdminKey) {
+    // Authentication and authorization check
+    const adminCheck = await checkAdminAccess();
+    if (!adminCheck.isAdmin) {
       return NextResponse.json(
-        { error: 'Unauthorized - Invalid admin key' },
-        { status: 401 }
+        { error: adminCheck.error },
+        { status: adminCheck.status }
       );
     }
 
@@ -21,7 +52,7 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    console.log('🔧 Running missing profiles fix migration via API...');
+    console.log(`🔧 Running missing profiles fix migration via API by ${adminCheck.user?.email}...`);
 
     // Step 1: Check for missing profiles
     const { data: missingProfiles, error: checkError } = await supabase.rpc('exec_sql', {
@@ -140,6 +171,7 @@ export async function POST(request: NextRequest) {
       missingCount: missingProfiles.length,
       created: missingProfiles.length - (remainingMissing?.length || 0),
       remainingMissing: remainingMissing?.length || 0,
+      executedBy: adminCheck.user?.email,
       missingUsers: missingProfiles.map(user => ({
         email: user.email,
         id: user.id.substring(0, 8) + '...'
@@ -150,7 +182,7 @@ export async function POST(request: NextRequest) {
       })) || []
     };
 
-    console.log('🎉 Migration completed successfully via API');
+    console.log(`🎉 Migration completed successfully via API by ${adminCheck.user?.email}`);
     return NextResponse.json(result);
 
   } catch (error) {
@@ -168,6 +200,15 @@ export async function POST(request: NextRequest) {
 // GET method for checking status without running migration
 export async function GET(request: NextRequest) {
   try {
+    // Authentication and authorization check
+    const adminCheck = await checkAdminAccess();
+    if (!adminCheck.isAdmin) {
+      return NextResponse.json(
+        { error: adminCheck.error },
+        { status: adminCheck.status }
+      );
+    }
+
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -193,6 +234,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       missingCount: missingProfiles?.length || 0,
+      checkedBy: adminCheck.user?.email,
       missingUsers: missingProfiles?.map(user => ({
         email: user.email,
         id: user.id.substring(0, 8) + '...',
