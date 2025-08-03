@@ -255,8 +255,11 @@ export default function ProfilePage() {
                   <SelectValue placeholder="Select a dietary preference" />
                 </SelectTrigger>
                 <SelectContent
-                  position="item-aligned"
-                  className="min-w-[var(--radix-select-trigger-width)]"
+                  position="popper"
+                  side="bottom"
+                  align="start"
+                  sideOffset={4}
+                  className="min-w-[var(--radix-select-trigger-width)] !animate-none data-[state=open]:!animate-none data-[state=closed]:!animate-none data-[state=open]:!fade-in-0 data-[state=open]:!zoom-in-100 data-[side=bottom]:!slide-in-from-top-0"
                 >
                   <SelectItem value="none">No Preference</SelectItem>
                   <SelectItem value="vegetarian">Vegetarian</SelectItem>
