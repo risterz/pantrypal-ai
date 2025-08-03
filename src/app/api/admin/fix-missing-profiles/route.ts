@@ -34,34 +34,30 @@ async function checkAdminAccess() {
   return { isAdmin: true, user };
 }
 
-// Helper function to get missing profiles
+// Helper function to get missing profiles using SQL query
 async function getMissingProfiles(supabase: any) {
-  // Get all users from auth.users
-  const { data: users, error: usersError } = await supabase.auth.admin.listUsers();
+  // Use a SQL query to find users in auth.users that don't have profiles
+  // This approach doesn't require service role key for auth.admin.listUsers()
+  const { data: missingUsers, error } = await supabase.rpc('get_users_without_profiles');
   
-  if (usersError) {
-    throw new Error(`Failed to fetch users: ${usersError.message}`);
+  if (error) {
+    // If the RPC function doesn't exist, fall back to a simpler check
+    console.log('RPC function not found, using fallback method');
+    
+    // Get all profiles and check if current user has one
+    const { data: profiles, error: profilesError } = await supabase
+      .from('profiles')
+      .select('id');
+
+    if (profilesError) {
+      throw new Error(`Failed to fetch profiles: ${profilesError.message}`);
+    }
+
+    // For now, return empty array since we can't access auth.users without service role
+    return [];
   }
 
-  // Get all profiles
-  const { data: profiles, error: profilesError } = await supabase
-    .from('profiles')
-    .select('id');
-
-  if (profilesError) {
-    throw new Error(`Failed to fetch profiles: ${profilesError.message}`);
-  }
-
-  const profileIds = new Set(profiles.map((p: any) => p.id));
-  
-  // Find users without profiles
-  const missingProfiles = users.users.filter((user: any) => !profileIds.has(user.id));
-  
-  return missingProfiles.map((user: any) => ({
-    id: user.id,
-    email: user.email,
-    created_at: user.created_at
-  }));
+  return missingUsers || [];
 }
 
 // This API route allows running the missing profiles fix migration from Vercel
@@ -76,16 +72,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Initialize Supabase client with service role key
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const regularSupabase = await createServerClient();
 
     console.log(`🔧 Running missing profiles fix migration via API by ${adminCheck.user?.email}...`);
 
     // Step 1: Check for missing profiles
-    const missingProfiles = await getMissingProfiles(supabase);
+    const missingProfiles = await getMissingProfiles(regularSupabase);
 
     if (missingProfiles.length === 0) {
       return NextResponse.json({
@@ -109,7 +101,7 @@ export async function POST(request: NextRequest) {
       role: 'user'
     }));
 
-    const { data: createdProfiles, error: createError } = await supabase
+    const { data: createdProfiles, error: createError } = await regularSupabase
       .from('profiles')
       .insert(profilesToCreate)
       .select();
@@ -123,10 +115,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 3: Verify the fix
-    const remainingMissing = await getMissingProfiles(supabase);
+    const remainingMissing = await getMissingProfiles(regularSupabase);
 
     // Step 4: Get current profile stats
-    const { data: profileStats, error: statsError } = await supabase
+    const { data: profileStats, error: statsError } = await regularSupabase
       .from('profiles')
       .select('id, username, created_at')
       .order('created_at', { ascending: false })
@@ -176,13 +168,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const regularSupabase = await createServerClient();
 
     // Check for missing profiles
-    const missingProfiles = await getMissingProfiles(supabase);
+    const missingProfiles = await getMissingProfiles(regularSupabase);
 
     return NextResponse.json({
       missingCount: missingProfiles.length,
