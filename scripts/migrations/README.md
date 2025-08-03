@@ -54,14 +54,34 @@ Adds dietary preferences column to recipe enhancements table.
    npm install
    ```
 
-### Execution
+### Execution Options
+
+#### Option 1: Local Execution (Recommended)
 ```bash
-# Run specific migrations
+# Run specific migrations locally
 npm run migrate                    # Dietary preferences
 npm run fix-missing-profiles      # Missing profiles fix
 
 # Or run directly
 node scripts/migrations/fix-missing-profiles.js
+```
+
+#### Option 2: Vercel Deployment (Web Interface)
+For deployed applications on Vercel, use the admin interface:
+
+1. **Visit the admin page**: `https://your-domain.com/admin/migrations`
+2. **Check profiles**: Click "Check Profiles" to see missing profiles
+3. **Run migration**: Click "Run Migration" to fix missing profiles
+
+#### Option 3: Vercel API Endpoints
+You can also call the API endpoints directly:
+
+```bash
+# Check for missing profiles
+curl https://your-domain.com/api/admin/fix-missing-profiles
+
+# Run the migration
+curl -X POST https://your-domain.com/api/admin/fix-missing-profiles
 ```
 
 ## Troubleshooting
