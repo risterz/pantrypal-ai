@@ -19,7 +19,7 @@ Adopt modern web application patterns with emphasis on scalability, maintainabil
 - **Accepted**: TypeScript adds development overhead but improves code quality
 
 ## Status
-**Implemented** - Core patterns established and documented
+**Implemented** - Core patterns established and documented, enhanced with self-healing architecture
 
 ## Architecture Overview
 
@@ -185,6 +185,29 @@ src/
 - Zod schemas for runtime validation
 - Generated types from Supabase
 - Type-safe API clients
+
+## Self-Healing Architecture Patterns
+
+### Profile Management Pattern
+**Pattern**: Self-Healing with Automatic Recovery
+- Database triggers for automatic profile creation on user registration
+- Client-side detection and auto-creation of missing profiles
+- Graceful error handling with user feedback
+- No manual intervention required for profile management
+
+### RLS Policy Pattern
+**Pattern**: Simple, Non-Recursive Security
+- Bootstrap admin access using email-based policies
+- User-specific access using auth.uid() matching
+- Conflict resolution with `ON CONFLICT DO NOTHING`
+- Simplified policy structure to prevent infinite recursion
+
+### Error Recovery Pattern
+**Pattern**: Multi-Layer Fallback System
+- Database-level: Enhanced triggers with conflict handling
+- Application-level: Client-side auto-creation when profiles missing
+- User-level: Clear feedback and seamless recovery experience
+- Admin-level: Simplified policies for reliable admin access
 
 ## AI Integration Patterns
 

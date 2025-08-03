@@ -56,11 +56,11 @@ export default function ProfilePage() {
           .select('*')
           .eq('id', user.id)
           .single();
-          
+
         if (profileError && profileError.code !== 'PGRST116') {
           throw profileError;
         }
-        
+
         if (profileData) {
           setProfile(profileData);
           setUsername(profileData.username || '');
@@ -79,6 +79,33 @@ export default function ProfilePage() {
             setDietaryPreference(preferenceMap[firstPreference] || 'none');
           } else {
             setDietaryPreference('none');
+          }
+        } else {
+          // Profile doesn't exist, create one automatically
+          console.log('Profile not found, creating new profile...');
+          const { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              username: `user_${user.id.substring(0, 8)}`,
+              full_name: user.user_metadata?.full_name || user.user_metadata?.name || null,
+              avatar_url: user.user_metadata?.avatar_url || null,
+              role: 'user',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+            .select()
+            .single();
+
+          if (createError) {
+            console.error('Error creating profile:', createError);
+            toast.error('Failed to create profile. Please try refreshing the page.');
+          } else {
+            console.log('Profile created successfully:', newProfile);
+            setProfile(newProfile);
+            setUsername(newProfile.username || '');
+            setDietaryPreference('none');
+            toast.success('Profile created successfully!');
           }
         }
       } catch (error) {
@@ -230,7 +257,7 @@ export default function ProfilePage() {
                     {getDietDisplayName(dietaryPreference)}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="popper" side="bottom" align="start" sideOffset={4}>
                   <SelectItem value="none">No Preference</SelectItem>
                   <SelectItem value="vegetarian">Vegetarian</SelectItem>
                   <SelectItem value="vegan">Vegan</SelectItem>

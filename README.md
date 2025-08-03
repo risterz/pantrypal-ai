@@ -129,12 +129,14 @@ pantrypal-ai/
 
 PantryPal AI follows a modern web application architecture:
 
-- **Frontend**: React with Next.js App Router for optimal performance
+- **Frontend**: React 19 with Next.js 15 App Router for optimal performance
 - **State Management**: React hooks and context for local state
 - **Database**: Supabase PostgreSQL with real-time subscriptions
-- **Authentication**: Supabase Auth with multiple providers
-- **API Integration**: RESTful APIs for recipe data
-- **AI Enhancement**: Custom AI system for recipe improvements
+- **Authentication**: Supabase Auth with Google OAuth and email/password
+- **API Integration**: Spoonacular API for recipe data
+- **AI Enhancement**: DeepSeek AI for intelligent recipe improvements
+- **3D Graphics**: Three.js with React Three Fiber for interactive UI
+- **Deployment**: Vercel with automatic CI/CD from GitHub
 
 ## 🤝 Contributing
 

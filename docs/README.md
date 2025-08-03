@@ -16,24 +16,23 @@ Welcome to the PantryPal AI documentation hub. This directory contains comprehen
 - [System Flow](./technical/system-flow.md) - Technical system architecture and flow
 - [Recipe Enhancement System](./technical/recipe-enhancement/) - AI enhancement documentation
 
-### Project Documentation
-- [Project Context](./project-context.md) - Comprehensive project overview and requirements
-- [Use Cases](./use-cases.md) - User scenarios and application use cases
-- [Project Significance](./project-significance.md) - Project importance and impact
-- [Development Rules](./development-rules.md) - Development guidelines and standards
+### Authentication & Features
+- [Google OAuth Implementation Guide](./google-oauth-implementation-guide.md) - OAuth setup and configuration
+- [Dietary Preferences AI Enhancement](./dietary-preferences-ai-enhancement.md) - AI enhancement system
 
-### Diagrams (`diagrams/`)
-- System architecture diagrams (PlantUML format)
-- Development methodology flowcharts
-- Use case diagrams
+### Visual Documentation
+- `flowcharts/` - System flowcharts and diagrams (PlantUML and Mermaid)
+- `screenshots/` - Application screenshots and UI documentation
+- `diagrams/` - System architecture diagrams
+- `fixes/` - Bug fixes and improvements documentation
 
 ## 🚀 Quick Navigation
 
 ### **🆕 For New Developers (Start Here)**
 1. **[System Flow Documentation](./system-flow-documentation.md)** - Complete user journey and system flows
 2. **[Technical System Documentation](./technical-system-documentation.md)** - Detailed implementation with code examples
-3. [Project Context](./project-context.md) - Project overview and requirements
-4. [Development Rules](./development-rules.md) - Coding standards and guidelines
+3. **[Google OAuth Implementation Guide](./google-oauth-implementation-guide.md)** - Authentication setup
+4. **[Flowcharts](./flowcharts/)** - Visual system representation
 
 ### For Business Stakeholders
 1. Review [Lean Canvas](./business/lean-canvas.md) for business model

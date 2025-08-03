@@ -223,7 +223,7 @@ export default function SignUpPage() {
       </motion.div>
 
       {/* Main Content */}
-      <div className="flex justify-center items-center min-h-screen px-8 py-12 relative z-20">
+      <div className="flex justify-center items-center min-h-screen px-4 py-4 relative z-20">
         <motion.div
           initial={{ opacity: 0, y: 50, scale: 0.9 }}
           animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 50, scale: isVisible ? 1 : 0.9 }}
@@ -239,25 +239,25 @@ export default function SignUpPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
             >
-              <CardHeader className="space-y-1 text-center">
+              <CardHeader className="space-y-1 text-center pb-2">
                 <motion.div
-                  className="flex justify-center mb-4"
+                  className="flex justify-center mb-1"
                   animate={{ rotate: 360 }}
                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 >
-                  <div className="p-3 bg-gradient-to-r from-[#FF6B6B] to-[#FF8A8A] rounded-full">
-                    <ChefHat className="h-8 w-8 text-white" />
+                  <div className="p-2 bg-gradient-to-r from-[#FF6B6B] to-[#FF8A8A] rounded-full">
+                    <ChefHat className="h-6 w-6 text-white" />
                   </div>
                 </motion.div>
-                <CardTitle className="text-3xl font-bold bg-gradient-to-r from-[#FF6B6B] to-[#FF4444] bg-clip-text text-transparent">
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#FF6B6B] to-[#FF4444] bg-clip-text text-transparent">
                   Create an Account
                 </CardTitle>
-                <CardDescription className="text-gray-600">
+                <CardDescription className="text-gray-600 text-sm">
                   Join PantryPal AI to save recipes and get AI-powered enhancements
                 </CardDescription>
               </CardHeader>
             </motion.div>
-            <CardContent className="space-y-6 p-6">
+            <CardContent className="space-y-2 p-3">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -267,7 +267,7 @@ export default function SignUpPage() {
                   variant="outline"
                   onClick={handleGoogleSignUp}
                   disabled={isLoading}
-                  className="w-full h-12 border-2 hover:border-[#FF6B6B] hover:bg-[#FF6B6B]/10 transition-all duration-300 transform hover:scale-105"
+                  className="w-full h-9 border-2 hover:border-[#FF6B6B] hover:bg-[#FF6B6B]/10 transition-all duration-300 transform hover:scale-105"
                 >
                   <motion.div
                     animate={{ rotate: isLoading ? 360 : 0 }}
@@ -296,7 +296,7 @@ export default function SignUpPage() {
                   </span>
                 </div>
               </motion.div>
-              <form onSubmit={handleEmailSignUp} className="space-y-6">
+              <form onSubmit={handleEmailSignUp} className="space-y-2">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -312,7 +312,7 @@ export default function SignUpPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="h-12 pl-12 border-2 focus:border-[#FF6B6B] transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                      className="h-9 pl-10 border-2 focus:border-[#FF6B6B] transition-all duration-300 bg-white/50 backdrop-blur-sm"
                     />
                     <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   </div>
@@ -333,7 +333,7 @@ export default function SignUpPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="h-12 pl-12 border-2 focus:border-[#FF6B6B] transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                      className="h-9 pl-10 border-2 focus:border-[#FF6B6B] transition-all duration-300 bg-white/50 backdrop-blur-sm"
                     />
                     <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
                       <div className="h-5 w-5 bg-gradient-to-r from-[#FF6B6B] to-[#FF8A8A] rounded-full flex items-center justify-center">
@@ -358,7 +358,7 @@ export default function SignUpPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                      className="h-12 pl-12 border-2 focus:border-[#FF6B6B] transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                      className="h-9 pl-10 border-2 focus:border-[#FF6B6B] transition-all duration-300 bg-white/50 backdrop-blur-sm"
                     />
                     <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
                       <div className="h-5 w-5 bg-gradient-to-r from-[#FF8A8A] to-[#FFA8A8] rounded-full flex items-center justify-center">
@@ -371,7 +371,7 @@ export default function SignUpPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9, duration: 0.6 }}
-                  className="flex items-center space-x-3 p-4 bg-gradient-to-r from-red-50 to-red-100 rounded-lg border border-red-200"
+                  className="flex items-center space-x-3 p-2 bg-gradient-to-r from-red-50 to-red-100 rounded-lg border border-red-200"
                 >
                   <Checkbox
                     id="terms"
@@ -400,7 +400,7 @@ export default function SignUpPage() {
                 >
                   <Button
                     type="submit"
-                    className="w-full h-12 bg-gradient-to-r from-[#FF6B6B] to-[#FF4444] hover:from-[#ff5252] hover:to-[#FF2222] text-white font-semibold transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="w-full h-9 bg-gradient-to-r from-[#FF6B6B] to-[#FF4444] hover:from-[#ff5252] hover:to-[#FF2222] text-white font-semibold transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
                     disabled={isLoading || !agreedToTerms}
                   >
                     <AnimatePresence mode="wait">
@@ -443,7 +443,7 @@ export default function SignUpPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.1, duration: 0.6 }}
             >
-              <CardFooter className="flex flex-col space-y-4 pt-6 pb-8">
+              <CardFooter className="flex flex-col space-y-2 pt-2 pb-3">
                 <div className="text-center text-sm text-gray-600">
                   Already have an account?{' '}
                   <Link
@@ -453,67 +453,13 @@ export default function SignUpPage() {
                     Sign in here
                   </Link>
                 </div>
-
-                {/* Feature highlights */}
-                <div className="py-6 mt-4 px-4">
-                  <div className="border-t border-gray-200 mb-4"></div>
-                  <div className="grid grid-cols-3 gap-4">
-                  <motion.div
-                    className="text-center"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="bg-red-100 p-2 rounded-full w-fit mx-auto mb-2">
-                      <Heart className="h-4 w-4 text-red-600" />
-                    </div>
-                    <p className="text-xs text-gray-600">Save Favorites</p>
-                  </motion.div>
-
-                  <motion.div
-                    className="text-center"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="bg-blue-100 p-2 rounded-full w-fit mx-auto mb-2">
-                      <Sparkles className="h-4 w-4 text-blue-600" />
-                    </div>
-                    <p className="text-xs text-gray-600">AI Enhancements</p>
-                  </motion.div>
-
-                  <motion.div
-                    className="text-center"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="bg-green-100 p-2 rounded-full w-fit mx-auto mb-2">
-                      <ChefHat className="h-4 w-4 text-green-600" />
-                    </div>
-                    <p className="text-xs text-gray-600">Recipe Search</p>
-                  </motion.div>
-                  </div>
-                </div>
               </CardFooter>
             </motion.div>
           </Card>
         </motion.div>
       </div>
 
-      {/* Floating Action Indicators */}
-      <motion.div
-        className="fixed bottom-8 right-8 z-30"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.5, duration: 0.5 }}
-      >
-        <motion.div
-          className="bg-gradient-to-r from-[#FF6B6B] to-[#FF4444] p-3 rounded-full shadow-lg cursor-pointer"
-          whileHover={{ scale: 1.1, rotate: 180 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        >
-          <ChefHat className="h-6 w-6 text-white" />
-        </motion.div>
-      </motion.div>
+
     </div>
   );
 }

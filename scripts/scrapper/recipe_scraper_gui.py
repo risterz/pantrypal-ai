@@ -104,7 +104,10 @@ class RecipeScraperApp:
         
         self.save_file_button = ttk.Button(self.button_frame, text="Save to File", command=self.save_to_file)
         self.save_file_button.pack(side='left', padx=5)
-        
+
+        self.manual_button = ttk.Button(self.button_frame, text="Manual Entry", command=self.open_manual_entry)
+        self.manual_button.pack(side='left', padx=5)
+
         self.clear_button = ttk.Button(self.button_frame, text="Clear", command=self.clear_results)
         self.clear_button.pack(side='left', padx=5)
         
@@ -851,6 +854,160 @@ class RecipeScraperApp:
         
         return len(intersection) / len(union)
     
+    def open_manual_entry(self):
+        """Open a window for manual enhancement entry"""
+        manual_window = tk.Toplevel(self.root)
+        manual_window.title("Manual Enhancement Entry")
+        manual_window.geometry("800x600")
+        manual_window.configure(bg='#f5f5f5')
+
+        # Make window modal
+        manual_window.transient(self.root)
+        manual_window.grab_set()
+
+        # Recipe info frame
+        info_frame = ttk.Frame(manual_window)
+        info_frame.pack(fill='x', padx=20, pady=10)
+
+        # Recipe ID
+        ttk.Label(info_frame, text="Recipe ID:").grid(row=0, column=0, sticky='w', padx=5)
+        recipe_id_var = tk.StringVar(value=self.recipe_id_entry.get())
+        recipe_id_entry = ttk.Entry(info_frame, textvariable=recipe_id_var, width=15)
+        recipe_id_entry.grid(row=0, column=1, sticky='w', padx=5)
+
+        # Recipe Title
+        ttk.Label(info_frame, text="Recipe Title:").grid(row=0, column=2, sticky='w', padx=5)
+        recipe_title_var = tk.StringVar(value=self.recipe_title_entry.get())
+        recipe_title_entry = ttk.Entry(info_frame, textvariable=recipe_title_var, width=40)
+        recipe_title_entry.grid(row=0, column=3, sticky='w', padx=5)
+
+        # Instructions
+        instructions_frame = ttk.Frame(manual_window)
+        instructions_frame.pack(fill='x', padx=20, pady=5)
+
+        instructions_text = """Instructions:
+• Enter each enhancement on a new line
+• Keep enhancements concise and actionable
+• Focus on cooking tips, techniques, and improvements
+• Use clear, descriptive language"""
+
+        ttk.Label(instructions_frame, text=instructions_text, justify='left').pack(anchor='w')
+
+        # Text area for manual entry
+        text_frame = ttk.Frame(manual_window)
+        text_frame.pack(fill='both', expand=True, padx=20, pady=10)
+
+        ttk.Label(text_frame, text="Enter Recipe Enhancements (one per line):").pack(anchor='w', pady=5)
+
+        # Create text widget with scrollbar
+        text_widget = scrolledtext.ScrolledText(text_frame, width=80, height=20, wrap=tk.WORD)
+        text_widget.pack(fill='both', expand=True)
+
+        # Pre-populate with existing enhancements if any
+        if self.scraped_enhancements:
+            for enhancement in self.scraped_enhancements:
+                text_widget.insert(tk.END, f"{enhancement}\n")
+
+        # Button frame
+        button_frame = ttk.Frame(manual_window)
+        button_frame.pack(fill='x', padx=20, pady=10)
+
+        def save_manual_enhancements():
+            """Save the manually entered enhancements"""
+            recipe_id = recipe_id_var.get().strip()
+            recipe_title = recipe_title_var.get().strip()
+
+            if not recipe_id:
+                messagebox.showerror("Error", "Please enter a recipe ID.")
+                return
+
+            if not recipe_title:
+                messagebox.showerror("Error", "Please enter a recipe title.")
+                return
+
+            # Get text content and split into lines
+            content = text_widget.get(1.0, tk.END).strip()
+            if not content:
+                messagebox.showerror("Error", "Please enter at least one enhancement.")
+                return
+
+            # Process the enhancements
+            enhancements = []
+            for line in content.split('\n'):
+                line = line.strip()
+                if line and len(line) > 5:  # Skip empty lines and very short entries
+                    # Remove numbering if present
+                    line = re.sub(r'^\d+\.\s*', '', line)
+                    line = re.sub(r'^[\-\*•]\s*', '', line)
+
+                    # Ensure proper punctuation
+                    if not line.endswith(('.', '!', '?')):
+                        line += '.'
+
+                    enhancements.append(line)
+
+            if not enhancements:
+                messagebox.showerror("Error", "No valid enhancements found. Please check your entries.")
+                return
+
+            # Update the main application
+            self.recipe_id_entry.delete(0, tk.END)
+            self.recipe_id_entry.insert(0, recipe_id)
+
+            self.recipe_title_entry.delete(0, tk.END)
+            self.recipe_title_entry.insert(0, recipe_title)
+
+            self.current_recipe_id = recipe_id
+            self.current_recipe_title = recipe_title
+            self.current_url = "Manual Entry"
+            self.scraped_enhancements = enhancements
+
+            # Display the enhancements
+            self.display_enhancements(enhancements)
+
+            # Log the action
+            self.log(f"Manually entered {len(enhancements)} enhancements for recipe {recipe_id}: {recipe_title}")
+            self.update_status(f"Manual entry: {len(enhancements)} enhancements")
+
+            # Close the window
+            manual_window.destroy()
+
+            messagebox.showinfo("Success", f"Successfully added {len(enhancements)} manual enhancements!")
+
+        def load_from_file():
+            """Load enhancements from a text file"""
+            file_path = filedialog.askopenfilename(
+                filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
+                title="Select a text file with enhancements"
+            )
+
+            if file_path:
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+
+                    text_widget.delete(1.0, tk.END)
+                    text_widget.insert(1.0, content)
+
+                    messagebox.showinfo("Success", "File loaded successfully!")
+
+                except Exception as e:
+                    messagebox.showerror("Error", f"Failed to load file: {str(e)}")
+
+        def clear_text():
+            """Clear the text area"""
+            if messagebox.askyesno("Confirm", "Clear all text?"):
+                text_widget.delete(1.0, tk.END)
+
+        # Buttons
+        ttk.Button(button_frame, text="Save Enhancements", command=save_manual_enhancements).pack(side='left', padx=5)
+        ttk.Button(button_frame, text="Load from File", command=load_from_file).pack(side='left', padx=5)
+        ttk.Button(button_frame, text="Clear", command=clear_text).pack(side='left', padx=5)
+        ttk.Button(button_frame, text="Cancel", command=manual_window.destroy).pack(side='right', padx=5)
+
+        # Focus on text widget
+        text_widget.focus_set()
+
     def scrape_recipe(self):
         """Legacy method for backward compatibility"""
         self.scrape_enhancements()
