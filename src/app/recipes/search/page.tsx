@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, Plus, Info, Heart, X, Lightbulb } from 'lucide-react';
 import { toast } from 'sonner';
@@ -25,19 +25,7 @@ export default function RecipeSearchPage() {
   const supabase = createClient();
   const router = useRouter();
 
-  // Helper function to get diet display name
-  const getDietDisplayName = (dietValue: string) => {
-    const dietMap: { [key: string]: string } = {
-      'none': 'No Preference',
-      'vegetarian': 'Vegetarian',
-      'vegan': 'Vegan',
-      'gluten-free': 'Gluten-Free',
-      'dairy-free': 'Dairy-Free',
-      'ketogenic': 'Ketogenic',
-      'paleo': 'Paleo'
-    };
-    return dietMap[dietValue] || 'Select dietary preference';
-  };
+
 
   // Helper function to map profile dietary preferences to search values
   const mapProfilePreferencesToSearchValue = (profilePreferences: string[]): string => {
@@ -390,22 +378,29 @@ export default function RecipeSearchPage() {
           <Label htmlFor="diet" className="text-lg font-medium mb-2 block">
             Dietary Preferences (Optional)
           </Label>
-          <Select value={diet} onValueChange={setDiet}>
-            <SelectTrigger id="diet" className="w-full">
-              <SelectValue placeholder="Select dietary preference">
-                {getDietDisplayName(diet)}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">No Preference</SelectItem>
-              <SelectItem value="vegetarian">Vegetarian</SelectItem>
-              <SelectItem value="vegan">Vegan</SelectItem>
-              <SelectItem value="gluten-free">Gluten-Free</SelectItem>
-              <SelectItem value="dairy-free">Dairy-Free</SelectItem>
-              <SelectItem value="ketogenic">Ketogenic</SelectItem>
-              <SelectItem value="paleo">Paleo</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="relative">
+            <select
+              id="diet"
+              value={diet}
+              onChange={(e) => setDiet(e.target.value)}
+              className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none cursor-pointer"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                backgroundPosition: 'right 0.5rem center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '1.5em 1.5em',
+                paddingRight: '2.5rem'
+              }}
+            >
+              <option value="none">No Preference</option>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="vegan">Vegan</option>
+              <option value="gluten-free">Gluten-Free</option>
+              <option value="dairy-free">Dairy-Free</option>
+              <option value="ketogenic">Ketogenic</option>
+              <option value="paleo">Paleo</option>
+            </select>
+          </div>
         </div>
         
         <div className="flex justify-center">
