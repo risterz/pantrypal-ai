@@ -7,26 +7,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import { ShieldAlert, UserCircle, Save, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ProfilePage() {
-  // Add CSS to fix Select dropdown positioning
-  React.useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      [data-radix-select-content] {
-        animation-duration: 0s !important;
-        transition-duration: 0s !important;
-      }
-      [data-radix-select-content][data-state="open"] {
-        animation: none !important;
-      }
-    `;
-    document.head.appendChild(style);
-    return () => document.head.removeChild(style);
-  }, []);
   const [username, setUsername] = useState('');
   const [dietaryPreference, setDietaryPreference] = useState<string>('none');
   const [isLoading, setIsLoading] = useState(true);
@@ -265,20 +250,21 @@ export default function ProfilePage() {
           <CardContent>
             <div className="space-y-2">
               <Label htmlFor="dietary-preference">Dietary Preference</Label>
-              <Select value={dietaryPreference} onValueChange={setDietaryPreference}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a dietary preference" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No Preference</SelectItem>
-                  <SelectItem value="vegetarian">Vegetarian</SelectItem>
-                  <SelectItem value="vegan">Vegan</SelectItem>
-                  <SelectItem value="gluten-free">Gluten-Free</SelectItem>
-                  <SelectItem value="dairy-free">Dairy-Free</SelectItem>
-                  <SelectItem value="ketogenic">Ketogenic</SelectItem>
-                  <SelectItem value="paleo">Paleo</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="relative">
+                <select
+                  value={dietaryPreference}
+                  onChange={(e) => setDietaryPreference(e.target.value)}
+                  className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="none">No Preference</option>
+                  <option value="vegetarian">Vegetarian</option>
+                  <option value="vegan">Vegan</option>
+                  <option value="gluten-free">Gluten-Free</option>
+                  <option value="dairy-free">Dairy-Free</option>
+                  <option value="ketogenic">Ketogenic</option>
+                  <option value="paleo">Paleo</option>
+                </select>
+              </div>
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
