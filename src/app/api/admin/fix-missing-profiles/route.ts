@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Admin emails that can access this endpoint
 const ADMIN_EMAILS = [
-  'harishariza02@gmail.com',
+  'harisharraz02@gmail.com',  // Fixed: was harishariza02@gmail.com
   'firstpantrypal@gmail.com',
   // Add more admin emails here
 ];
