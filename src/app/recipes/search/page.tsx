@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -8,10 +8,69 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, Plus, Info, Heart, X, Lightbulb } from 'lucide-react';
+import { Search, Plus, Info, Heart, X, Lightbulb, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { recipeApi, Recipe } from '@/lib/api/recipeApi';
 import { IngredientCategories } from '@/components/pantry/IngredientCategories';
+
+// Custom Select Component
+const CustomSelect = ({ value, onValueChange, options, placeholder }: {
+  value: string;
+  onValueChange: (value: string) => void;
+  options: { value: string; label: string }[];
+  placeholder?: string;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const selectedOption = options.find(option => option.value === value);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm"
+      >
+        <span className={selectedOption ? 'text-foreground' : 'text-muted-foreground'}>
+          {selectedOption ? selectedOption.label : placeholder}
+        </span>
+        <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-input rounded-md shadow-lg overflow-hidden">
+          {options.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => {
+                onValueChange(option.value);
+                setIsOpen(false);
+              }}
+              className={`w-full px-3 py-2 text-left text-sm hover:bg-gray-50 transition-colors ${
+                value === option.value ? 'bg-[#4ECDC4] text-white hover:bg-[#4ECDC4]' : 'text-gray-900'
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function RecipeSearchPage() {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -378,44 +437,20 @@ export default function RecipeSearchPage() {
           <Label htmlFor="diet" className="text-lg font-medium mb-2 block">
             Dietary Preferences (Optional)
           </Label>
-          <div className="relative">
-            <style jsx>{`
-              select option {
-                padding: 8px 12px;
-                background-color: white;
-                color: #374151;
-                border: none;
-              }
-              select option:hover {
-                background-color: #f3f4f6;
-              }
-              select option:checked {
-                background-color: #4ECDC4;
-                color: white;
-              }
-            `}</style>
-            <select
-              id="diet"
-              value={diet}
-              onChange={(e) => setDiet(e.target.value)}
-              className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none cursor-pointer shadow-sm"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-                backgroundPosition: 'right 0.5rem center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '1.5em 1.5em',
-                paddingRight: '2.5rem'
-              }}
-            >
-              <option value="none">No Preference</option>
-              <option value="vegetarian">Vegetarian</option>
-              <option value="vegan">Vegan</option>
-              <option value="gluten-free">Gluten-Free</option>
-              <option value="dairy-free">Dairy-Free</option>
-              <option value="ketogenic">Ketogenic</option>
-              <option value="paleo">Paleo</option>
-            </select>
-          </div>
+          <CustomSelect
+            value={diet}
+            onValueChange={setDiet}
+            placeholder="Select dietary preference"
+            options={[
+              { value: 'none', label: 'No Preference' },
+              { value: 'vegetarian', label: 'Vegetarian' },
+              { value: 'vegan', label: 'Vegan' },
+              { value: 'gluten-free', label: 'Gluten-Free' },
+              { value: 'dairy-free', label: 'Dairy-Free' },
+              { value: 'ketogenic', label: 'Ketogenic' },
+              { value: 'paleo', label: 'Paleo' }
+            ]}
+          />
         </div>
         
         <div className="flex justify-center">
