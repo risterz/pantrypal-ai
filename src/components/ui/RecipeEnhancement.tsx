@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +24,12 @@ export function RecipeEnhancement({
 }: RecipeEnhancementProps) {
   const [appliedEnhancements, setAppliedEnhancements] = useState<Set<string>>(new Set());
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(['healthier', 'faster', 'tastier']));
+  const [isClient, setIsClient] = useState(false);
+
+  // Fix hydration issues by ensuring client-side rendering
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const toggleEnhancement = (enhancement: string) => {
     const newApplied = new Set(appliedEnhancements);
@@ -61,44 +67,65 @@ export function RecipeEnhancement({
       tastier: [],
       other: []
     };
-    
+
     enhancements.forEach(enhancement => {
       const lowerEnhancement = enhancement.toLowerCase();
-      
-      // Check if enhancement contains keywords related to health
-      if (lowerEnhancement.includes('health') || 
-          lowerEnhancement.includes('calorie') || 
-          lowerEnhancement.includes('nutrition') || 
-          lowerEnhancement.includes('fat') || 
-          lowerEnhancement.includes('sugar') || 
-          lowerEnhancement.includes('salt') || 
+
+      // First check for explicit prefixes from the new AI format
+      if (lowerEnhancement.startsWith('healthier:') || lowerEnhancement.includes('healthier:')) {
+        categorized.healthier.push(enhancement.replace(/^healthier:\s*/i, ''));
+      }
+      else if (lowerEnhancement.startsWith('time-saving:') || lowerEnhancement.includes('time-saving:')) {
+        categorized.faster.push(enhancement.replace(/^time-saving:\s*/i, ''));
+      }
+      else if (lowerEnhancement.startsWith('flavor:') || lowerEnhancement.includes('flavor:')) {
+        categorized.tastier.push(enhancement.replace(/^flavor:\s*/i, ''));
+      }
+      // Fallback to keyword-based categorization for backward compatibility
+      else if (lowerEnhancement.includes('health') ||
+          lowerEnhancement.includes('calorie') ||
+          lowerEnhancement.includes('nutrition') ||
+          lowerEnhancement.includes('fat') ||
+          lowerEnhancement.includes('sugar') ||
+          lowerEnhancement.includes('salt') ||
           lowerEnhancement.includes('sodium') ||
           lowerEnhancement.includes('substitute') ||
           lowerEnhancement.includes('oil') ||
-          lowerEnhancement.includes('leaner')) {
+          lowerEnhancement.includes('leaner') ||
+          lowerEnhancement.includes('greek yogurt') ||
+          lowerEnhancement.includes('whole grain') ||
+          lowerEnhancement.includes('reduce') ||
+          lowerEnhancement.includes('air fry')) {
         categorized.healthier.push(enhancement);
       }
       // Check if enhancement contains keywords related to time-saving
-      else if (lowerEnhancement.includes('time') || 
-               lowerEnhancement.includes('quick') || 
-               lowerEnhancement.includes('fast') || 
-               lowerEnhancement.includes('efficient') || 
-               lowerEnhancement.includes('prep') || 
+      else if (lowerEnhancement.includes('time') ||
+               lowerEnhancement.includes('quick') ||
+               lowerEnhancement.includes('fast') ||
+               lowerEnhancement.includes('efficient') ||
+               lowerEnhancement.includes('prep') ||
                lowerEnhancement.includes('prepare') ||
                lowerEnhancement.includes('pressure cooker') ||
                lowerEnhancement.includes('instant pot') ||
-               lowerEnhancement.includes('microwave')) {
+               lowerEnhancement.includes('microwave') ||
+               lowerEnhancement.includes('ahead') ||
+               lowerEnhancement.includes('batch') ||
+               lowerEnhancement.includes('shortcut')) {
         categorized.faster.push(enhancement);
       }
       // Check if enhancement contains keywords related to flavor
-      else if (lowerEnhancement.includes('flavor') || 
-               lowerEnhancement.includes('taste') || 
-               lowerEnhancement.includes('delicious') || 
-               lowerEnhancement.includes('seasoning') || 
-               lowerEnhancement.includes('herb') || 
+      else if (lowerEnhancement.includes('flavor') ||
+               lowerEnhancement.includes('taste') ||
+               lowerEnhancement.includes('delicious') ||
+               lowerEnhancement.includes('seasoning') ||
+               lowerEnhancement.includes('herb') ||
                lowerEnhancement.includes('spice') ||
                lowerEnhancement.includes('aroma') ||
-               lowerEnhancement.includes('texture')) {
+               lowerEnhancement.includes('texture') ||
+               lowerEnhancement.includes('garlic') ||
+               lowerEnhancement.includes('lemon') ||
+               lowerEnhancement.includes('fresh') ||
+               lowerEnhancement.includes('season')) {
         categorized.tastier.push(enhancement);
       }
       // If no category matches, put in other
@@ -106,12 +133,38 @@ export function RecipeEnhancement({
         categorized.other.push(enhancement);
       }
     });
-    
+
+    // Ensure minimum enhancements per category by redistributing from 'other'
+    const ensureMinimumEnhancements = () => {
+      const minPerCategory = 2; // Minimum 2 per category
+
+      // If any category has fewer than minimum, try to redistribute from 'other'
+      if (categorized.healthier.length < minPerCategory && categorized.other.length > 0) {
+        const needed = minPerCategory - categorized.healthier.length;
+        const moved = categorized.other.splice(0, Math.min(needed, categorized.other.length));
+        categorized.healthier.push(...moved);
+      }
+
+      if (categorized.faster.length < minPerCategory && categorized.other.length > 0) {
+        const needed = minPerCategory - categorized.faster.length;
+        const moved = categorized.other.splice(0, Math.min(needed, categorized.other.length));
+        categorized.faster.push(...moved);
+      }
+
+      if (categorized.tastier.length < minPerCategory && categorized.other.length > 0) {
+        const needed = minPerCategory - categorized.tastier.length;
+        const moved = categorized.other.splice(0, Math.min(needed, categorized.other.length));
+        categorized.tastier.push(...moved);
+      }
+    };
+
+    ensureMinimumEnhancements();
+
     return categorized;
   };
   
-  // Generate or use provided enhancements
-  const generateEnhancements = () => {
+  // Memoize enhancement generation to prevent hydration issues
+  const processedEnhancements = useMemo(() => {
     // If aiEnhancements are provided, use those instead of generating new ones
     if (aiEnhancements && aiEnhancements.length > 0) {
       // Clean up enhancements by removing ** markers and introductory text
@@ -138,16 +191,16 @@ export function RecipeEnhancement({
         return cleaned.trim();
       }).filter(enhancement => enhancement.length > 10); // Filter out very short enhancements
     }
-    
+
     const enhancements = [];
-    
+
     // Check if frying is mentioned in any instruction
-    const hasFrying = instructions.some(instruction => 
-      instruction.toLowerCase().includes('fry') || 
-      instruction.toLowerCase().includes('sauté') || 
+    const hasFrying = instructions.some(instruction =>
+      instruction.toLowerCase().includes('fry') ||
+      instruction.toLowerCase().includes('sauté') ||
       instruction.toLowerCase().includes('sautee')
     );
-    
+
     if (hasFrying) {
       enhancements.push("Consider using an air fryer instead of traditional frying to reduce oil and make the dish healthier while maintaining similar texture.");
     }
@@ -188,20 +241,45 @@ export function RecipeEnhancement({
     }
     
     return enhancements;
-  };
-  
-  const enhancements = generateEnhancements();
-  
-  // Filter out any empty enhancements
-  const filteredEnhancements = enhancements.filter(enhancement => 
-    enhancement && enhancement.trim().length > 0
-  );
-  
-  // Use provided categorized enhancements or generate them from the filtered enhancements
-  const finalCategorizedEnhancements = categorizedEnhancements || categorizeEnhancements(filteredEnhancements);
+  }, [aiEnhancements, instructions, ingredients]);
+
+  // Memoize categorization to prevent hydration issues
+  const finalCategorizedEnhancements = useMemo(() => {
+    if (categorizedEnhancements) {
+      return categorizedEnhancements;
+    }
+
+    // Filter out any empty enhancements
+    const filteredEnhancements = processedEnhancements.filter(enhancement =>
+      enhancement && enhancement.trim().length > 0
+    );
+
+    return categorizeEnhancements(filteredEnhancements);
+  }, [categorizedEnhancements, processedEnhancements]);
 
   // Check if we have any enhancements at all
   const hasEnhancements = finalCategorizedEnhancements && Object.values(finalCategorizedEnhancements).some(category => category.length > 0);
+
+  // Prevent hydration mismatch by showing loading state until client-side
+  if (!isClient) {
+    return (
+      <Card className="bg-gradient-to-br from-blue-50 to-green-50 border-blue-200 shadow-lg">
+        <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6 py-3 sm:py-4">
+          <div className="animate-pulse">
+            <div className="h-6 bg-blue-100 rounded w-3/4 mb-2"></div>
+            <div className="h-4 bg-blue-100 rounded w-1/2"></div>
+          </div>
+        </CardHeader>
+        <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
+          <div className="animate-pulse space-y-3">
+            <div className="h-20 bg-blue-100 rounded"></div>
+            <div className="h-20 bg-blue-100 rounded"></div>
+            <div className="h-20 bg-blue-100 rounded"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const shareAllEnhancements = () => {
     const allEnhancements = [

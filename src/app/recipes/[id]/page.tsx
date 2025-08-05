@@ -253,10 +253,12 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
 
   const fetchEnhancements = async (recipeData: RecipeDetail) => {
     try {
+      console.log('🔄 Starting fetchEnhancements for recipe:', recipeData.id);
       setIsLoadingEnhancements(true);
-      
+
       // Get effective dietary preferences for this enhancement
       const effectiveDietaryPreferences = getEffectiveDietaryPreferences();
+      console.log('🍽️ Effective dietary preferences:', effectiveDietaryPreferences);
 
       // First check if we already have enhancements stored in the database with matching dietary preferences
       const existingEnhancements = await recipeEnhancementDbApi.getEnhancementByRecipeId(
@@ -358,9 +360,9 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
       console.log('Fixed enhancements stored:', fixedEnhancementsList);
       
     } catch (error) {
-      console.error('Error loading enhancements:', error);
-      toast.error('Failed to load enhancements');
-      
+      console.error('💥 Error loading enhancements:', error);
+      toast.error(`Failed to load enhancements: ${error.message || 'Unknown error'}`);
+
       // Provide fallback enhancements if something goes wrong
       const fallbackEnhancements = [
         'Use whole wheat pasta for added fiber and nutrients.',
@@ -369,12 +371,17 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
         'Use lean protein sources to reduce calories and fat.',
         'Cook with less oil by using non-stick cookware or cooking spray.'
       ];
-      
+
+      console.log('🔄 Using fallback enhancements due to error');
       setEnhancements(fallbackEnhancements);
-      
+
       // Also fetch scraped enhancements for comparison
-      fetchScrapedEnhancements(recipeData.id);
-      
+      try {
+        fetchScrapedEnhancements(recipeData.id);
+      } catch (scrapedError) {
+        console.error('Error fetching scraped enhancements:', scrapedError);
+      }
+
       // Try to store even the fallback enhancements
       try {
         const fallbackObj: RecipeEnhancement = {
@@ -383,12 +390,14 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
           enhancements: fallbackEnhancements,
           generatedAt: new Date()
         };
-        
+
         await recipeEnhancementDbApi.storeEnhancement(fallbackObj);
+        console.log('✅ Stored fallback enhancements');
       } catch (storeError) {
-        console.error('Failed to store fallback enhancements:', storeError);
+        console.error('❌ Failed to store fallback enhancements:', storeError);
       }
     } finally {
+      console.log('🏁 Finished fetchEnhancements, setting loading to false');
       setIsLoadingEnhancements(false);
     }
   };
