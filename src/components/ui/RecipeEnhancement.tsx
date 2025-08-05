@@ -1,53 +1,60 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Clock, Heart, Zap, Copy, ChevronDown, ChevronUp, Share2 } from 'lucide-react';
+import { Lightbulb, Heart, Clock, Zap, ChefHat, Sparkles, CheckCircle, Copy, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-interface CategorizedEnhancements {
-  healthier: string[];
-  faster: string[];
-  tastier: string[];
-  other: string[];
-}
+import { CategorizedEnhancements } from '@/lib/api/recipeEnhancementDbApi';
 
 interface RecipeEnhancementProps {
-  aiEnhancements?: string[];
-  scrapedEnhancements?: string[];
-  showComparison?: boolean;
-  onToggleComparison?: () => void;
+  recipeTitle: string;
+  instructions: string[];
+  ingredients: string[];
+  aiEnhancements?: string[]; // Added new prop for externally provided AI enhancements
+  categorizedEnhancements?: CategorizedEnhancements | null; // Added new prop for categorized enhancements
 }
 
-export default function RecipeEnhancement({ 
-  aiEnhancements = [], 
-  scrapedEnhancements = [], 
-  showComparison = false,
-  onToggleComparison 
+export function RecipeEnhancement({
+  recipeTitle,
+  instructions,
+  ingredients,
+  aiEnhancements,
+  categorizedEnhancements
 }: RecipeEnhancementProps) {
-  const [categorizedEnhancements, setCategorizedEnhancements] = useState<CategorizedEnhancements | null>(null);
-  const [expandedCategories, setExpandedCategories] = useState<{[key: string]: boolean}>({
-    healthier: true,
-    faster: true,
-    tastier: true
-  });
+  const [appliedEnhancements, setAppliedEnhancements] = useState<Set<string>>(new Set());
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(['healthier', 'faster', 'tastier']));
+  const [isClient, setIsClient] = useState(false);
 
-  // Copy enhancement to clipboard
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch (err) {
-      // Fallback for older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
+  // Fix hydration issues by ensuring client-side rendering
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const toggleEnhancement = (enhancement: string) => {
+    const newApplied = new Set(appliedEnhancements);
+    if (newApplied.has(enhancement)) {
+      newApplied.delete(enhancement);
+      toast.success('Enhancement unmarked');
+    } else {
+      newApplied.add(enhancement);
+      toast.success('Enhancement marked as applied!');
     }
+    setAppliedEnhancements(newApplied);
+  };
+
+  const toggleCategory = (category: string) => {
+    const newExpanded = new Set(expandedCategories);
+    if (newExpanded.has(category)) {
+      newExpanded.delete(category);
+    } else {
+      newExpanded.add(category);
+    }
+    setExpandedCategories(newExpanded);
+  };
+
+  const copyEnhancement = (enhancement: string) => {
+    navigator.clipboard.writeText(enhancement);
     toast.success('Enhancement copied to clipboard!');
   };
 
@@ -156,335 +163,272 @@ export default function RecipeEnhancement({
     return categorized;
   };
   
-  // Generate or use provided enhancements
-  const generateEnhancements = () => {
+  // Memoize enhancement generation to prevent hydration issues
+  const processedEnhancements = useMemo(() => {
     // If aiEnhancements are provided, use those instead of generating new ones
     if (aiEnhancements && aiEnhancements.length > 0) {
       // Clean up enhancements by removing ** markers and introductory text
       return aiEnhancements.map(enhancement => {
         // Remove any introductory sentences
         let cleaned = enhancement
-          .replace(/^\*\*.*?\*\*:?\s*/i, '') // Remove **text**: at the beginning
-          .replace(/^(here are|below are|i suggest|you can).*?:/i, '') // Remove common intro phrases
-          .replace(/\*\*/g, '') // Remove all ** markers
+          .replace(/^Here are.+?:/i, '')
+          .replace(/^Here is.+?:/i, '')
+          .replace(/^Below are.+?:/i, '')
+          .replace(/^I suggest.+?:/i, '')
+          .replace(/^These are.+?:/i, '')
+          .replace(/^.+enhancements for.+?:/i, '')
+          .replace(/^.+suggestions for.+?:/i, '')
+          .replace(/^.+ways to enhance.+?:/i, '')
+          .replace(/^.+improvements for.+?:/i, '')
           .trim();
-        
-        // If the cleaned text is too short, return the original
-        return cleaned.length > 10 ? cleaned : enhancement.replace(/\*\*/g, '').trim();
-      });
+
+        // Remove asterisks and other formatting
+        cleaned = cleaned.replace(/\*\*/g, '');
+
+        // Remove bullet points if they exist at the start
+        cleaned = cleaned.replace(/^[•\-\*\d\.]+\s*/, '');
+
+        return cleaned.trim();
+      }).filter(enhancement => enhancement.length > 10); // Filter out very short enhancements
     }
     
-    // Fallback enhancements if no AI enhancements provided
-    return [
-      "For a healthier version: Use Greek yogurt instead of sour cream to reduce calories while adding protein.",
-      "Speed up cooking: Prepare ingredients in advance and use a pressure cooker to reduce cooking time by up to 70%.",
-      "Enhance flavor: Try adding a small amount of acid (lemon juice or vinegar) at the end to brighten flavors.",
-      "Reduce sodium: Use herbs and spices instead of salt for seasoning to create more complex flavors.",
-      "Save time: Pre-chop vegetables and store them in the refrigerator for quick meal assembly."
-    ];
-  };
-
-  // Calculate enhancement percentages
-  const calculateEnhancementPercentages = (categorized: CategorizedEnhancements) => {
-    const totalEnhancements = categorized.healthier.length + categorized.faster.length + categorized.tastier.length;
+    const enhancements = [];
     
-    return {
-      healthier: Math.round((categorized.healthier.length / totalEnhancements) * 100) || 0,
-      faster: Math.round((categorized.faster.length / totalEnhancements) * 100) || 0,
-      tastier: Math.round((categorized.tastier.length / totalEnhancements) * 100) || 0,
-      total: Math.min(100, (categorized.healthier.length + categorized.faster.length + categorized.tastier.length) * 10)
-    };
-  };
-
-  // Toggle category expansion
-  const toggleCategory = (category: string) => {
-    setExpandedCategories(prev => ({
-      ...prev,
-      [category]: !prev[category]
-    }));
-  };
-
-  // Share enhancements
-  const shareEnhancements = async () => {
-    if (!categorizedEnhancements) return;
+    // Check if frying is mentioned in any instruction
+    const hasFrying = instructions.some(instruction => 
+      instruction.toLowerCase().includes('fry') || 
+      instruction.toLowerCase().includes('sauté') || 
+      instruction.toLowerCase().includes('sautee')
+    );
     
-    const allEnhancements = [
-      ...categorizedEnhancements.healthier,
-      ...categorizedEnhancements.faster,
-      ...categorizedEnhancements.tastier
-    ];
-    
-    const shareText = `AI Recipe Enhancements:\n\n${allEnhancements.map((enhancement, index) => `${index + 1}. ${enhancement}`).join('\n')}`;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'AI Recipe Enhancements',
-          text: shareText
-        });
-      } catch (err) {
-        // Fallback to clipboard
-        copyToClipboard(shareText);
-      }
-    } else {
-      copyToClipboard(shareText);
+    if (hasFrying) {
+      enhancements.push("Consider using an air fryer instead of traditional frying to reduce oil and make the dish healthier while maintaining similar texture.");
     }
-  };
+    
+    // Check for high-fat ingredients
+    const hasHighFatIngredients = ingredients.some(ingredient => 
+      ingredient.toLowerCase().includes('cream') || 
+      ingredient.toLowerCase().includes('butter') ||
+      ingredient.toLowerCase().includes('oil')
+    );
+    
+    if (hasHighFatIngredients) {
+      enhancements.push("For a healthier version: Replace heavy cream with Greek yogurt or substitute butter with olive oil to reduce saturated fat.");
+    }
+    
+    // Check for long cooking times in instructions
+    const hasLongCooking = instructions.some(instruction => 
+      instruction.toLowerCase().includes('simmer for') || 
+      instruction.toLowerCase().includes('bake for') ||
+      instruction.toLowerCase().includes('cook for')
+    );
+    
+    if (hasLongCooking) {
+      enhancements.push("Speed up cooking: Use a pressure cooker or Instant Pot to reduce cooking time by up to 70% while maintaining flavor.");
+    }
+    
+    // General flavor enhancement
+    enhancements.push("Enhance flavor: Add fresh herbs like basil, parsley, or cilantro in the last few minutes of cooking for a burst of fresh flavor.");
+    
+    // Time-saving tip
+    enhancements.push("Save time: Prep ingredients the night before and store them in the refrigerator for quick assembly the next day.");
+    
+    // Healthier cooking method
+    enhancements.push("For better nutrition: Add extra vegetables like spinach, bell peppers, or zucchini to increase fiber and vitamins.");
+    
+    // Batch cooking suggestion
+    if (instructions.length > 3) {
+      enhancements.push("Consider batch cooking and freezing portions for future meals to save time.");
+    }
+    
+    return enhancements;
+  }, [aiEnhancements, instructions, ingredients]);
 
-  // Initialize categorized enhancements
-  useEffect(() => {
-    const enhancements = generateEnhancements();
-    const categorized = categorizeEnhancements(enhancements);
-    setCategorizedEnhancements(categorized);
-  }, [aiEnhancements]);
+  // Memoize categorization to prevent hydration issues
+  const finalCategorizedEnhancements = useMemo(() => {
+    if (categorizedEnhancements) {
+      return categorizedEnhancements;
+    }
+    
+    // Filter out any empty enhancements
+    const filteredEnhancements = processedEnhancements.filter(enhancement => 
+      enhancement && enhancement.trim().length > 0
+    );
+    
+    return categorizeEnhancements(filteredEnhancements);
+  }, [categorizedEnhancements, processedEnhancements]);
 
-  if (!categorizedEnhancements) {
+  // Check if we have any enhancements at all
+  const hasEnhancements = finalCategorizedEnhancements && Object.values(finalCategorizedEnhancements).some(category => category.length > 0);
+
+  // Prevent hydration mismatch by showing loading state until client-side
+  if (!isClient) {
     return (
-      <Card className="w-full">
-        <CardContent className="p-6">
-          <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+      <Card className="bg-gradient-to-br from-blue-50 to-green-50 border-blue-200 shadow-lg">
+        <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6 py-3 sm:py-4">
+          <div className="animate-pulse">
+            <div className="h-6 bg-blue-100 rounded w-3/4 mb-2"></div>
+            <div className="h-4 bg-blue-100 rounded w-1/2"></div>
+          </div>
+        </CardHeader>
+        <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
+          <div className="animate-pulse space-y-3">
+            <div className="h-20 bg-blue-100 rounded"></div>
+            <div className="h-20 bg-blue-100 rounded"></div>
+            <div className="h-20 bg-blue-100 rounded"></div>
           </div>
         </CardContent>
       </Card>
     );
   }
 
-  const percentages = calculateEnhancementPercentages(categorizedEnhancements);
+  const shareAllEnhancements = () => {
+    const allEnhancements = [
+      ...finalCategorizedEnhancements.healthier,
+      ...finalCategorizedEnhancements.faster,
+      ...finalCategorizedEnhancements.tastier,
+      ...finalCategorizedEnhancements.other
+    ];
+    const text = `AI Enhancement Suggestions for ${recipeTitle}:\n\n${allEnhancements.map((e, i) => `${i + 1}. ${e}`).join('\n')}`;
+    navigator.clipboard.writeText(text);
+    toast.success('All enhancements copied to clipboard!');
+  };
+  
+  // Function to render a category section with interactive features
+  const renderCategory = (title: string, enhancements: string[], icon: React.ReactNode, categoryKey: string) => {
+    if (enhancements.length === 0) return null;
 
-  return (
-    <div className="w-full space-y-4">
-      {/* Header */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-        <CardHeader className="pb-4">
+    const isExpanded = expandedCategories.has(categoryKey);
+    const categoryColor = {
+      healthier: 'border-red-200 bg-red-50',
+      faster: 'border-blue-200 bg-blue-50',
+      tastier: 'border-yellow-200 bg-yellow-50',
+      other: 'border-purple-200 bg-purple-50'
+    }[categoryKey] || 'border-gray-200 bg-gray-50';
+
+    return (
+      <Card className={`mb-3 sm:mb-4 ${categoryColor} border-2`}>
+        <CardHeader className="pb-2 px-3 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Zap className="h-5 w-5 text-yellow-500" />
-              <CardTitle className="text-lg font-semibold text-blue-700">
-                AI Enhancement Suggestions
-              </CardTitle>
-              <Badge variant="secondary" className="text-xs">
-                Powered by DeepSeek
+            <div className="flex items-center gap-1 sm:gap-2 flex-1 min-w-0">
+              <div className="flex-shrink-0">
+                {icon}
+              </div>
+              <h3 className="text-sm sm:text-lg font-semibold truncate">{title}</h3>
+              <Badge variant="secondary" className="ml-1 sm:ml-2 text-xs flex-shrink-0">
+                {enhancements.length * 10}%
               </Badge>
             </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">
-                Smart ways to improve this recipe • {percentages.total}% enhancement score
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={shareEnhancements}
-                className="text-gray-600 hover:text-gray-800"
-              >
-                <Share2 className="h-4 w-4 mr-1" />
-                Share
-              </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleCategory(categoryKey)}
+              className="text-gray-500 hover:text-gray-700 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0"
+            >
+              {isExpanded ? 'Collapse' : 'Expand'}
+            </Button>
+          </div>
+        </CardHeader>
+        {isExpanded && (
+          <CardContent className="pt-0 px-3 sm:px-6 pb-3 sm:pb-6">
+            <div className="space-y-2 sm:space-y-3">
+              {enhancements.map((enhancement, index) => (
+                <div
+                  key={`${categoryKey}-${index}`}
+                  className={`p-2 sm:p-3 rounded-lg border transition-all duration-200 ${
+                    appliedEnhancements.has(enhancement)
+                      ? 'bg-green-50 border-green-200'
+                      : 'bg-white border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-2 sm:gap-3">
+                    <div className="flex items-start gap-1 sm:gap-2 flex-1 min-w-0">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleEnhancement(enhancement)}
+                        className={`p-1 h-5 w-5 sm:h-6 sm:w-6 rounded-full flex-shrink-0 ${
+                          appliedEnhancements.has(enhancement)
+                            ? 'text-green-600 hover:text-green-700'
+                            : 'text-gray-400 hover:text-gray-600'
+                        }`}
+                      >
+                        <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                      </Button>
+                      <p className="text-xs sm:text-sm text-gray-700 leading-relaxed flex-1 min-w-0">
+                        {enhancement}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyEnhancement(enhancement)}
+                      className="text-gray-400 hover:text-gray-600 p-1 h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0"
+                    >
+                      <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        )}
+      </Card>
+    );
+  };
+
+  const totalEnhancements = finalCategorizedEnhancements.healthier.length + 
+                           finalCategorizedEnhancements.faster.length + 
+                           finalCategorizedEnhancements.tastier.length + 
+                           finalCategorizedEnhancements.other.length;
+
+  return (
+    <Card className="bg-gradient-to-br from-blue-50 to-green-50 border-blue-200 shadow-lg">
+      <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6 py-3 sm:py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            <div className="bg-yellow-100 p-1.5 sm:p-2 rounded-full flex-shrink-0">
+              <Sparkles className="h-4 w-4 sm:h-6 sm:w-6 text-yellow-600" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-xl text-blue-700 truncate">AI Enhancement Suggestions</CardTitle>
+              <CardDescription className="text-xs sm:text-sm text-blue-600">
+                Smart ways to improve this recipe • {totalEnhancements * 10}% enhancement score
+              </CardDescription>
             </div>
           </div>
-          <p className="text-sm text-blue-600 mt-2">
-            0/{categorizedEnhancements.healthier.length + categorizedEnhancements.faster.length + categorizedEnhancements.tastier.length} applied
-          </p>
-        </CardHeader>
-      </Card>
-
-      {/* Enhancement Categories */}
-      <div className="space-y-4">
-        {/* Time-Saving Enhancements */}
-        {categorizedEnhancements.faster.length > 0 && (
-          <Card className="border-blue-200 bg-blue-50/30">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Clock className="h-4 w-4 text-blue-600" />
-                  <CardTitle className="text-base font-medium text-blue-700">
-                    ⚡ Time-Saving {percentages.faster}%
-                  </CardTitle>
-                  <Badge variant="outline" className="text-xs">
-                    {percentages.faster}%
-                  </Badge>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => toggleCategory('faster')}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  {expandedCategories.faster ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                  <span className="ml-1 text-xs">
-                    {expandedCategories.faster ? 'Collapse' : 'Expand'}
-                  </span>
-                </Button>
-              </div>
-            </CardHeader>
-            {expandedCategories.faster && (
-              <CardContent className="pt-0">
-                <div className="space-y-3">
-                  {categorizedEnhancements.faster.map((enhancement, index) => (
-                    <div key={index} className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-blue-100">
-                      <div className="flex-shrink-0 mt-1">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      </div>
-                      <div className="flex-grow">
-                        <p className="text-sm text-gray-700 leading-relaxed">
-                          {enhancement}
-                        </p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => copyToClipboard(enhancement)}
-                        className="flex-shrink-0 text-gray-400 hover:text-gray-600"
-                      >
-                        <Copy className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            )}
-          </Card>
-        )}
-
-        {/* Flavor Boosters */}
-        {categorizedEnhancements.tastier.length > 0 && (
-          <Card className="border-yellow-200 bg-yellow-50/30">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Zap className="h-4 w-4 text-yellow-600" />
-                  <CardTitle className="text-base font-medium text-yellow-700">
-                    ✨ Flavor Boosters {percentages.tastier}%
-                  </CardTitle>
-                  <Badge variant="outline" className="text-xs">
-                    {percentages.tastier}%
-                  </Badge>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => toggleCategory('tastier')}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  {expandedCategories.tastier ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                  <span className="ml-1 text-xs">
-                    {expandedCategories.tastier ? 'Collapse' : 'Expand'}
-                  </span>
-                </Button>
-              </div>
-            </CardHeader>
-            {expandedCategories.tastier && (
-              <CardContent className="pt-0">
-                <div className="space-y-3">
-                  {categorizedEnhancements.tastier.map((enhancement, index) => (
-                    <div key={index} className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-yellow-100">
-                      <div className="flex-shrink-0 mt-1">
-                        <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                      </div>
-                      <div className="flex-grow">
-                        <p className="text-sm text-gray-700 leading-relaxed">
-                          {enhancement}
-                        </p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => copyToClipboard(enhancement)}
-                        className="flex-shrink-0 text-gray-400 hover:text-gray-600"
-                      >
-                        <Copy className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            )}
-          </Card>
-        )}
-
-        {/* Healthier Options */}
-        {categorizedEnhancements.healthier.length > 0 && (
-          <Card className="border-green-200 bg-green-50/30">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Heart className="h-4 w-4 text-green-600" />
-                  <CardTitle className="text-base font-medium text-green-700">
-                    🥗 Healthier Options {percentages.healthier}%
-                  </CardTitle>
-                  <Badge variant="outline" className="text-xs">
-                    {percentages.healthier}%
-                  </Badge>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => toggleCategory('healthier')}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  {expandedCategories.healthier ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                  <span className="ml-1 text-xs">
-                    {expandedCategories.healthier ? 'Collapse' : 'Expand'}
-                  </span>
-                </Button>
-              </div>
-            </CardHeader>
-            {expandedCategories.healthier && (
-              <CardContent className="pt-0">
-                <div className="space-y-3">
-                  {categorizedEnhancements.healthier.map((enhancement, index) => (
-                    <div key={index} className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-green-100">
-                      <div className="flex-shrink-0 mt-1">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      </div>
-                      <div className="flex-grow">
-                        <p className="text-sm text-gray-700 leading-relaxed">
-                          {enhancement}
-                        </p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => copyToClipboard(enhancement)}
-                        className="flex-shrink-0 text-gray-400 hover:text-gray-600"
-                      >
-                        <Copy className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            )}
-          </Card>
-        )}
-      </div>
-
-      {/* Comparison Toggle */}
-      {scrapedEnhancements && scrapedEnhancements.length > 0 && onToggleComparison && (
-        <div className="flex justify-center pt-4">
-          <Button
-            variant="outline"
-            onClick={onToggleComparison}
-            className="text-sm"
-          >
-            {showComparison ? 'Hide' : 'Show'} Expert Comparison
-          </Button>
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            <Badge variant="outline" className="text-xs">
+              {appliedEnhancements.size}/{totalEnhancements} applied
+            </Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={shareAllEnhancements}
+              className="text-gray-600 hover:text-gray-800 text-xs sm:text-sm px-2 sm:px-3"
+            >
+              <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+              Share
+            </Button>
+          </div>
         </div>
-      )}
-    </div>
+      </CardHeader>
+      <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
+        {hasEnhancements ? (
+          <div className="space-y-3 sm:space-y-4">
+            {renderCategory(`💚 Healthier ${finalCategorizedEnhancements.healthier.length * 10}%`, finalCategorizedEnhancements.healthier, <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />, "healthier")}
+            {renderCategory(`⚡ Time-Saving ${finalCategorizedEnhancements.faster.length * 10}%`, finalCategorizedEnhancements.faster, <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />, "faster")}
+            {renderCategory(`✨ Flavor Boosters ${finalCategorizedEnhancements.tastier.length * 10}%`, finalCategorizedEnhancements.tastier, <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" />, "tastier")}
+            {finalCategorizedEnhancements.other.length > 0 && renderCategory(`🔧 Other Tips ${finalCategorizedEnhancements.other.length * 10}%`, finalCategorizedEnhancements.other, <ChefHat className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500" />, "other")}
+          </div>
+        ) : (
+          <div className="text-center py-6 sm:py-8">
+            <Lightbulb className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+            <p className="text-sm sm:text-base text-gray-600 mb-2">No enhancements available for this recipe yet.</p>
+            <p className="text-xs sm:text-sm text-gray-500">Try generating AI suggestions or check back later!</p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
