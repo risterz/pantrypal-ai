@@ -26,6 +26,20 @@
   .mobile-button-spacing > * + * {
     margin-top: 0.5rem;
   }
+
+  /* Ensure buttons are properly spaced and visible on mobile */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Specific fix for homepage button visibility */
+  .homepage-explore-button {
+    position: relative;
+    z-index: 30;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+  }
 }
 
 /* Line clamp utility for better text truncation */
@@ -43,13 +57,8 @@
   overflow: hidden;
 }
 
-/* Smooth scrolling for better UX */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Parallax and Animation Styles */
-@keyframes fadeInUp {
+/* Custom animations */
+@keyframes fade-in-up {
   from {
     opacity: 0;
     transform: translateY(30px);
@@ -60,38 +69,61 @@ html {
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
   }
-  to {
-    opacity: 1;
+  50% {
+    transform: translateY(-10px);
   }
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 1s ease-out forwards;
+  animation: fade-in-up 0.8s ease-out;
 }
 
-.animate-fade-in {
-  animation: fadeIn 1s ease-out forwards;
+.animate-bounce-slow {
+  animation: bounce-slow 3s ease-in-out infinite;
 }
 
 .animation-delay-200 {
-  animation-delay: 0.2s;
+  animation-delay: 200ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
 }
 
 .animation-delay-400 {
-  animation-delay: 0.4s;
+  animation-delay: 400ms;
 }
 
-.animation-delay-600 {
-  animation-delay: 0.6s;
+/* Hover effects for cards */
+.card-hover {
+  transition: all 0.3s ease;
 }
 
-/* Parallax container */
-.parallax-container {
-  overflow-x: hidden;
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4ECDC4;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #44b8b1;
 }
 
 /* Smooth transitions for all interactive elements */
@@ -129,52 +161,51 @@ html {
   font-weight: 500;
 }
 
-/* Fix any potential overlay issues */
-.tabs-content {
-  position: relative;
-  z-index: 10;
-  background-color: transparent;
+/* Recipe card improvements */
+.recipe-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e5e7eb;
 }
 
-/* Ensure proper stacking context */
-.search-container {
-  position: relative;
-  z-index: 1;
+.recipe-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-color: #4ECDC4;
 }
 
-/* Recipe summary formatting */
+/* Enhancement card styling */
+.enhancement-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-left: 4px solid #4ECDC4;
+  transition: all 0.3s ease;
+}
+
+.enhancement-card:hover {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  transform: translateX(4px);
+}
+
+/* Loading spinner */
+.loading-spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #4ECDC4;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Recipe summary text styling */
 .recipe-summary {
   text-align: justify;
   text-justify: inter-word;
   hyphens: auto;
   line-height: 1.7;
-  font-size: 0.95rem;
-}
-
-.recipe-summary p {
-  margin-bottom: 1rem;
-  text-indent: 0;
-}
-
-.recipe-summary p:last-child {
-  margin-bottom: 0;
-}
-
-/* Better text formatting for recipe summaries */
-.recipe-summary strong {
-  color: #374151;
-  font-weight: 600;
-}
-
-.recipe-summary a {
-  color: #4ECDC4;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.recipe-summary a:hover {
-  color: #3dbdb5;
-  text-decoration: underline;
 }
 
 /* Mobile text adjustments */
@@ -206,9 +237,7 @@ html {
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
@@ -222,10 +251,9 @@ html {
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
 :root {
@@ -252,40 +280,40 @@ html {
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 }
 
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.145 0 0);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
+  --primary: oklch(0.985 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --secondary: oklch(0.205 0 0);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --muted: oklch(0.205 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.205 0 0);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.205 0 0);
+  --input: oklch(0.205 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
