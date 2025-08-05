@@ -16,39 +16,37 @@ function getDietaryContext(preferences: string[] | null | undefined): string {
     return '';
   }
 
-  const dietaryMap: { [key: string]: string } = {
-    'vegetarian': 'VEGETARIAN: Avoid meat, poultry, and fish. Focus on plant-based proteins and ingredients.',
-    'vegan': 'VEGAN: Avoid all animal products including meat, dairy, eggs, and honey. Use plant-based alternatives.',
-    'glutenFree': 'GLUTEN-FREE: Avoid wheat, barley, rye, and other gluten-containing ingredients. Suggest gluten-free alternatives.',
-    'dairyFree': 'DAIRY-FREE: Avoid milk, cheese, butter, and other dairy products. Use dairy-free alternatives.',
-    'keto': 'KETOGENIC: Focus on high-fat, low-carb ingredients. Minimize carbohydrates and sugars.',
-    'paleo': 'PALEO: Focus on whole foods, avoid processed foods, grains, legumes, and dairy. Emphasize meat, fish, vegetables, fruits, nuts, and seeds.'
-  };
+  const dietaryInstructions = preferences.map(pref => {
+    switch (pref.toLowerCase()) {
+      case 'vegetarian':
+        return 'Focus on plant-based alternatives and avoid suggesting meat-based enhancements.';
+      case 'vegan':
+        return 'Ensure all suggestions are completely plant-based, avoiding dairy, eggs, and all animal products.';
+      case 'gluten-free':
+        return 'Suggest gluten-free alternatives for wheat, barley, rye, and other gluten-containing ingredients.';
+      case 'keto':
+        return 'Prioritize low-carb, high-fat alternatives and avoid suggesting high-carb ingredients.';
+      case 'paleo':
+        return 'Focus on whole foods and avoid processed ingredients, grains, legumes, and dairy.';
+      case 'dairy-free':
+        return 'Suggest dairy-free alternatives for milk, cheese, butter, and other dairy products.';
+      case 'low-sodium':
+        return 'Emphasize herbs, spices, and other flavor enhancers instead of salt-based seasonings.';
+      case 'low-sugar':
+        return 'Avoid suggesting added sugars and focus on natural sweeteners or sugar reduction techniques.';
+      default:
+        return `Consider ${pref} dietary preferences in your suggestions.`;
+    }
+  }).join(' ');
 
-  const dietaryInstructions = preferences
-    .map(pref => dietaryMap[pref])
-    .filter(Boolean)
-    .join('\n        ');
-
-  if (dietaryInstructions) {
-    return `
-        DIETARY PREFERENCES: The user has the following dietary preferences. Please prioritize enhancements that align with these preferences:
-        ${dietaryInstructions}
-
-        When suggesting ingredient substitutions, always consider these dietary restrictions first.`;
-  }
-
-  return '';
-}
-
-interface EnhanceRecipeRequest {
-  recipe: RecipeDetail;
-  userDietaryPreferences?: string[] | null;
+  return `
+DIETARY PREFERENCES: The user follows these dietary preferences: ${preferences.join(', ')}.
+${dietaryInstructions}
+Please ensure all enhancement suggestions align with these dietary requirements.`;
 }
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if API key is configured
     if (!DEEPSEEK_API_KEY) {
       return NextResponse.json(
         { error: 'DeepSeek API key not configured' },
@@ -56,19 +54,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const requestData: EnhanceRecipeRequest = await request.json();
-    const { recipe, userDietaryPreferences } = requestData;
-    
-    // Validate recipe data
-    if (!recipe || !recipe.id || !recipe.title) {
+    const body = await request.json();
+    const { recipe, userDietaryPreferences } = body;
+
+    if (!recipe || !recipe.id) {
       return NextResponse.json(
-        { error: 'Invalid recipe data provided' },
+        { error: 'Recipe data is required' },
         { status: 400 }
       );
     }
 
-    // Extract recipe details
-    const { id, title, instructions, extendedIngredients } = recipe;
+    const { id, title, instructions, extendedIngredients } = recipe as RecipeDetail;
 
     // Format ingredients list
     const ingredientsList = extendedIngredients
@@ -82,23 +78,40 @@ export async function POST(request: NextRequest) {
     const messages: DeepseekMessage[] = [
       {
         role: 'system',
-        content: `You are a professional chef and nutritionist. Your task is to analyze recipes and suggest ways to enhance them to be:
-        1. Healthier - suggest ingredient substitutions and cooking methods that reduce calories, fat, or sodium while maintaining flavor
-        2. Faster - suggest time-saving techniques, preparation shortcuts, and efficient cooking methods
-        3. Tastier - suggest professional flavor enhancement techniques and tips to elevate the recipe
+        content: `You are a professional chef and nutritionist. Your task is to analyze recipes and suggest ways to enhance them in three specific categories:
+
+        1. HEALTHIER ENHANCEMENTS (provide at least 3 suggestions):
+        - Ingredient substitutions to reduce calories, fat, or sodium
+        - Cooking methods that make the dish more nutritious
+        - Ways to add more vegetables, fiber, or nutrients
+
+        2. TIME-SAVING ENHANCEMENTS (provide at least 3 suggestions):
+        - Preparation shortcuts and time-saving techniques
+        - Efficient cooking methods and equipment usage
+        - Make-ahead tips and batch cooking strategies
+
+        3. FLAVOR ENHANCEMENT SUGGESTIONS (provide at least 3 suggestions):
+        - Professional flavor enhancement techniques
+        - Seasoning, herb, and spice recommendations
+        - Texture and aroma improvements
 
         ${dietaryContext}
 
-        IMPORTANT: Provide ONLY the enhancement suggestions as a bulleted list. Do NOT include any introductory sentences like "Here are the enhancements" or "Below are suggestions". Start directly with the enhancement points.
+        IMPORTANT: 
+        - Provide EXACTLY 3-4 suggestions for EACH category (9-12 total suggestions)
+        - Format as a simple bulleted list without category headers
+        - Do NOT include introductory sentences
+        - Start each suggestion with a clear indicator: "Healthier:", "Time-saving:", or "Flavor:"
+        - Make each suggestion specific and practical for home cooks
 
-        Format each suggestion as:
-        - [Enhancement description]
-
-        Provide 3-5 specific, practical suggestions that a home cook could implement.`
+        Example format:
+        - Healthier: Replace heavy cream with Greek yogurt to reduce calories by 60%
+        - Time-saving: Prep vegetables the night before to cut cooking time in half
+        - Flavor: Add fresh herbs in the last 2 minutes for maximum aroma`
       },
       {
         role: 'user',
-        content: `Please enhance this recipe:
+        content: `Please enhance this recipe with 3-4 suggestions for each category (healthier, time-saving, and flavor):
         
         Title: ${title}
         
@@ -106,9 +119,7 @@ export async function POST(request: NextRequest) {
         ${ingredientsList}
         
         Instructions:
-        ${instructions || 'No instructions provided'}
-        
-        Provide specific enhancements to make this recipe healthier, faster to prepare, and tastier.`
+        ${instructions || 'No instructions provided'}`
       }
     ];
     
@@ -122,7 +133,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         model: 'deepseek-chat',
         messages,
-        max_tokens: 1000,
+        max_tokens: 1500,
         temperature: 0.7
       })
     });
@@ -138,54 +149,45 @@ export async function POST(request: NextRequest) {
     
     const data = await response.json();
     
-    // Validate API response structure
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       console.error('Invalid DeepSeek API response structure:', data);
       return NextResponse.json(
-        { error: 'Invalid response from AI service' },
+        { error: 'Invalid API response structure' },
         { status: 500 }
       );
     }
     
     const enhancementText = data.choices[0].message.content;
     
-    // Parse the enhancements from the AI response
+    if (!enhancementText || enhancementText.trim().length === 0) {
+      console.error('Empty enhancement text from DeepSeek API');
+      return NextResponse.json(
+        { error: 'Empty response from AI' },
+        { status: 500 }
+      );
+    }
+    
+    // Process the enhancement text to extract individual enhancements
     const enhancementLines = enhancementText
       .split('\n')
+      .map((line: string) => line.trim())
+      .filter((line: string) => line.length > 0)
       .filter((line: string) => {
-        const trimmed = line.trim();
-        // Skip empty lines
-        if (trimmed.length === 0) return false;
-
-        // Skip introductory sentences that start with common phrases
-        if (trimmed.toLowerCase().startsWith('here are') ||
-            trimmed.toLowerCase().startsWith('here is') ||
-            trimmed.toLowerCase().startsWith('below are') ||
-            trimmed.toLowerCase().startsWith('i suggest') ||
-            trimmed.toLowerCase().startsWith('these are') ||
-            trimmed.toLowerCase().includes('enhancements for') ||
-            trimmed.toLowerCase().includes('suggestions for') ||
-            trimmed.toLowerCase().includes('ways to enhance') ||
-            trimmed.toLowerCase().includes('improvements for')) {
-          return false;
-        }
-
-        // Only include lines that look like actual enhancement items
-        return (line.includes('-') || /^\d+\./.test(trimmed) || line.includes('•'));
+        // Filter out common introductory phrases
+        const lowerLine = line.toLowerCase();
+        return !lowerLine.startsWith('here are') &&
+               !lowerLine.startsWith('below are') &&
+               !lowerLine.startsWith('i suggest') &&
+               !lowerLine.startsWith('you can') &&
+               !lowerLine.includes('enhancement') && 
+               !lowerLine.includes('suggestion') &&
+               line.length > 20; // Filter out very short lines
       })
       .map((line: string) => {
-        // Remove numbered/bulleted list markers and clean up formatting
-        let cleaned = line.replace(/^[•\-\d\.]+\s*/, '').trim();
-
-        // Remove any asterisks that might be used for emphasis
-        cleaned = cleaned.replace(/\*\*/g, '');
-
-        // Remove any remaining introductory phrases that might be embedded
-        cleaned = cleaned.replace(/^(Here are|Here is|Below are|I suggest|These are)\s+/i, '');
-
-        return cleaned;
+        // Clean up the line by removing bullet points and extra formatting
+        return line.replace(/^[-*•]\s*/, '').replace(/\*\*/g, '').trim();
       })
-      .filter((line: string) => line.length > 10); // Filter out very short lines
+      .filter((line: string) => line.length > 10); // Final filter for meaningful content
     
     // Ensure we have at least some enhancements
     const finalEnhancements = enhancementLines.length > 0 
