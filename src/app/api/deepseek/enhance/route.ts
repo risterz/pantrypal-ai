@@ -167,35 +167,80 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Process the enhancement text to extract individual enhancements
+    // Parse the enhancements from the AI response
+    console.log('Raw AI response:', enhancementText);
+    
     const enhancementLines = enhancementText
       .split('\n')
-      .map((line: string) => line.trim())
-      .filter((line: string) => line.length > 0)
       .filter((line: string) => {
-        // Filter out common introductory phrases
-        const lowerLine = line.toLowerCase();
-        return !lowerLine.startsWith('here are') &&
-               !lowerLine.startsWith('below are') &&
-               !lowerLine.startsWith('i suggest') &&
-               !lowerLine.startsWith('you can') &&
-               !lowerLine.includes('enhancement') && 
-               !lowerLine.includes('suggestion') &&
-               line.length > 20; // Filter out very short lines
+        const trimmed = line.trim();
+        // Skip empty lines
+        if (trimmed.length === 0) return false;
+
+        // Skip introductory sentences that start with common phrases
+        if (trimmed.toLowerCase().startsWith('here are') ||
+            trimmed.toLowerCase().startsWith('here is') ||
+            trimmed.toLowerCase().startsWith('below are') ||
+            trimmed.toLowerCase().startsWith('i suggest') ||
+            trimmed.toLowerCase().startsWith('these are') ||
+            trimmed.toLowerCase().includes('enhancements for') ||
+            trimmed.toLowerCase().includes('suggestions for') ||
+            trimmed.toLowerCase().includes('ways to enhance') ||
+            trimmed.toLowerCase().includes('improvements for')) {
+          return false;
+        }
+
+        // Include lines that look like actual enhancement items OR have our new prefixes
+        return (line.includes('-') || 
+                /^\d+\./.test(trimmed) || 
+                line.includes('•') ||
+                trimmed.toLowerCase().startsWith('healthier:') ||
+                trimmed.toLowerCase().startsWith('time-saving:') ||
+                trimmed.toLowerCase().startsWith('flavor:') ||
+                (trimmed.length > 15 && !trimmed.toLowerCase().includes('suggestion') && !trimmed.toLowerCase().includes('enhancement')));
       })
       .map((line: string) => {
-        // Clean up the line by removing bullet points and extra formatting
-        return line.replace(/^[-*•]\s*/, '').replace(/\*\*/g, '').trim();
+        // Remove numbered/bulleted list markers and clean up formatting
+        let cleaned = line.replace(/^[•\-\d\.]+\s*/, '').trim();
+
+        // Remove any asterisks that might be used for emphasis
+        cleaned = cleaned.replace(/\*\*/g, '');
+
+        // Remove any remaining introductory phrases that might be embedded
+        cleaned = cleaned.replace(/^(Here are|Here is|Below are|I suggest|These are)\s+/i, '');
+
+        return cleaned;
       })
-      .filter((line: string) => line.length > 10); // Final filter for meaningful content
+      .filter((line: string) => line.length > 8); // More lenient length filter
     
-    // Ensure we have at least some enhancements
-    const finalEnhancements = enhancementLines.length > 0 
-      ? enhancementLines 
-      : enhancementText.split('\n')
-          .filter((line: string) => line.trim().length > 0)
-          .map((line: string) => line.replace(/\*\*/g, ''))
-          .slice(0, 5);
+    console.log('Processed enhancement lines:', enhancementLines);
+    
+    // Ensure we have at least some enhancements with better fallback
+    let finalEnhancements = enhancementLines;
+    
+    if (finalEnhancements.length === 0) {
+      console.log('No enhancements found, using fallback processing');
+      // More aggressive fallback processing
+      finalEnhancements = enhancementText
+        .split('\n')
+        .map((line: string) => line.trim())
+        .filter((line: string) => line.length > 5)
+        .map((line: string) => line.replace(/^[-•*\d\.]+\s*/, '').replace(/\*\*/g, '').trim())
+        .filter((line: string) => line.length > 5)
+        .slice(0, 10);
+    }
+    
+    console.log('Final enhancements count:', finalEnhancements.length);
+    console.log('Final enhancements:', finalEnhancements);
+    
+    // If we still have no enhancements, return an error
+    if (finalEnhancements.length === 0) {
+      console.error('No valid enhancements could be extracted from AI response');
+      return NextResponse.json(
+        { error: 'Failed to extract valid enhancements from AI response' },
+        { status: 500 }
+      );
+    }
     
     const enhancement = {
       enhancementId: `deepseek_${Date.now()}`,
